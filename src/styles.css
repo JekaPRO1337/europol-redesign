@@ -1847,7 +1847,8 @@ address svg {
   margin-bottom: 4px;
 }
 
-.calc-cell input {
+.calc-cell input,
+.calc-cell select {
   width: 100%;
   height: 40px;
   border: 1px solid var(--line);
@@ -1856,8 +1857,62 @@ address svg {
   font-size: 13px;
   font-weight: 700;
   background: #ffffff;
-  z-index: 2;
+  box-sizing: border-box;
+  color: var(--ink);
+}
+
+/* Product input specific styling */
+.calc-cell input[list] {
   position: relative;
+  padding-right: 32px; /* space for arrow */
+}
+
+/* Dropdown arrow for product input */
+.calc-cell input[list]::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: transform 0.2s;
+}
+
+.calc-cell input[list]:focus::after,
+.calc-cell input[list]:not(:placeholder-shown)::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Keep the arrow color on focus */
+.calc-cell input[list]:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(122, 158, 92, 0.2);
+}
+
+.calc-cell select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath fill='none' stroke='%236B7280' stroke-width='1.5' d='m1 1 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
+}
+
+.calc-cell select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(122, 158, 92, 0.2);
+}
+
+/* Ensure select text color */
+.calc-cell select option {
+  color: var(--ink);
+  background: #ffffff;
 }
 
 .calc-cell datalist {
