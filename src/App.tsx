@@ -1067,14 +1067,15 @@ function App() {
                            <div className="calc-row" key={room.id}>
                              <div className="calc-cell">
                                <div className="calc-room-label">Кімната {idx + 1}</div>
-                               <input 
-                                 list={`products-datalist-${room.id}`}
-                                 value={room.productName}
-                                 onChange={(e) => handleRoomProductSelect(room.id, e.target.value)}
-                                 placeholder="Оберіть лінолеум або введіть назву..."
-                                 required
-                                 aria-label={`Покриття для кімнати ${idx + 1}`}
-                               />
+                                <input 
+                                  list={`products-datalist-${room.id}`}
+                                  value={room.productName}
+                                  onChange={(e) => handleRoomProductSelect(room.id, e.target.value)}
+                                  placeholder="Оберіть лінолеум або введіть назву..."
+                                  required
+                                  aria-label={`Покриття для кімнати ${idx + 1}`}
+                                  autoComplete="off"
+                                />
                                <datalist id={`products-datalist-${room.id}`}>
                                  {products.map((p) => (
                                    <option key={p.id} value={`${cleanTitle(p.title)} (${p.price} грн/м²)`} />
