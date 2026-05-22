@@ -1875,6 +1875,9 @@ address svg {
   overflow-y: auto;
   margin-top: 4px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .calc-cell option {
@@ -1882,6 +1885,10 @@ address svg {
   font-size: 13px;
   color: var(--ink);
   background: #ffffff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
 }
 
 .calc-cell option:hover,
