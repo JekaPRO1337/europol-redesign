@@ -5,8 +5,6 @@ import {
   Calculator,
   Check,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight as ChevronRightIcon,
   MapPin,
   Navigation,
   Phone,
@@ -22,9 +20,7 @@ import {
   Plus,
   Trash2,
   ExternalLink,
-  Info,
-  Clock,
-  Mail
+  Info
 } from 'lucide-react'
 import { catalogMeta, collections, products } from './data/catalog'
 import type { Product, ProductCategory } from './data/catalog'
