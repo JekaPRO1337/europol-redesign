@@ -19,7 +19,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Абсолют",
     "price": 565,
-    "image": "/products/09-абсолют-луїс-4.jpg",
+    "image": "products/09-абсолют-луїс-4.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -34,7 +34,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Абсолют",
     "price": 565,
-    "image": "/products/10-абсолют-магнус-4.jpg",
+    "image": "products/10-абсолют-магнус-4.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -49,7 +49,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Абсолют",
     "price": 565,
-    "image": "/products/11-абсолют-тауер-4.jpg",
+    "image": "products/11-абсолют-тауер-4.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -64,7 +64,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Абсолют",
     "price": 565,
-    "image": "/products/12-абсолют-тудор-1.jpg",
+    "image": "products/12-абсолют-тудор-1.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -79,7 +79,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Адмірал",
     "price": 410,
-    "image": "/products/40-адмірал-денмор-2.jpg",
+    "image": "products/40-адмірал-денмор-2.jpg",
     "specs": [
       "Загальна товщина: 4,40 мм",
       "товщина: 4,40 мм",
@@ -94,7 +94,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Адмірал",
     "price": 410,
-    "image": "/products/41-адмірал-лінкольн-4.jpg",
+    "image": "products/41-адмірал-лінкольн-4.jpg",
     "specs": [
       "Загальна товщина: 4,40 мм",
       "товщина: 4,40 мм",
@@ -109,7 +109,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Актіва",
     "price": 285,
-    "image": "/products/35-актіва-авеню-3.jpg",
+    "image": "products/35-актіва-авеню-3.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -124,7 +124,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Актіва",
     "price": 285,
-    "image": "/products/36-актіва-авеню-8.jpg",
+    "image": "products/36-актіва-авеню-8.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -139,7 +139,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Актіва",
     "price": 285,
-    "image": "/products/37-актіва-дублін-2.jpg",
+    "image": "products/37-актіва-дублін-2.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -154,7 +154,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Актіва",
     "price": 285,
-    "image": "/products/38-актіва-еліот-6.jpg",
+    "image": "products/38-актіва-еліот-6.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -169,7 +169,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Актіва",
     "price": 285,
-    "image": "/products/39-актіва-латур-1.jpg",
+    "image": "products/39-актіва-латур-1.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -184,7 +184,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Бонус",
     "price": 270,
-    "image": "/products/42-бонус-болтон-2.jpg",
+    "image": "products/42-бонус-болтон-2.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -199,7 +199,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Бонус",
     "price": 270,
-    "image": "/products/43-бонус-болтон-4.jpg",
+    "image": "products/43-бонус-болтон-4.jpg",
     "specs": [
       "Загальна товщина: 2 мм",
       "товщина: 2 мм",
@@ -214,7 +214,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Дельта",
     "price": 210,
-    "image": "/products/51-дельта-аврора-1.jpg",
+    "image": "products/51-дельта-аврора-1.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -229,7 +229,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Дельта",
     "price": 210,
-    "image": "/products/52-дельта-аврора-8.jpg",
+    "image": "products/52-дельта-аврора-8.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -244,7 +244,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Дельта",
     "price": 210,
-    "image": "/products/53-дельта-латур-1.jpg",
+    "image": "products/53-дельта-латур-1.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -259,7 +259,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/54-еволюшн-албус-4.jpg",
+    "image": "products/54-еволюшн-албус-4.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -274,7 +274,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/60-еволюшн-вагнер-2.jpg",
+    "image": "products/60-еволюшн-вагнер-2.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -289,7 +289,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/57-еволюшн-реймонд-2.jpg",
+    "image": "products/57-еволюшн-реймонд-2.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -304,7 +304,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/58-еволюшн-реймонд-4.jpg",
+    "image": "products/58-еволюшн-реймонд-4.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -319,7 +319,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/59-еволюшн-тоскана-4.jpg",
+    "image": "products/59-еволюшн-тоскана-4.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -334,7 +334,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/55-еволюшн-шеврон-5.jpg",
+    "image": "products/55-еволюшн-шеврон-5.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -349,7 +349,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Еволюшн",
     "price": 305,
-    "image": "/products/56-еволюшн-шеврон-6.jpg",
+    "image": "products/56-еволюшн-шеврон-6.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -364,7 +364,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Енерджі",
     "price": 315,
-    "image": "/products/22-енерджі-боіл-2.jpg",
+    "image": "products/22-енерджі-боіл-2.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -379,7 +379,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Енерджі",
     "price": 315,
-    "image": "/products/23-енерджі-боіл-3.jpg",
+    "image": "products/23-енерджі-боіл-3.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -394,7 +394,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Енерджі",
     "price": 315,
-    "image": "/products/24-енерджі-еторе-1.jpg",
+    "image": "products/24-енерджі-еторе-1.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -409,7 +409,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Енерджі",
     "price": 315,
-    "image": "/products/25-енерджі-пастер-2.jpg",
+    "image": "products/25-енерджі-пастер-2.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -424,7 +424,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Європа",
     "price": 285,
-    "image": "/products/67-європа-акрон-6.jpg",
+    "image": "products/67-європа-акрон-6.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -439,7 +439,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/01-ідилія-нова-атланта-1.jpg",
+    "image": "products/01-ідилія-нова-атланта-1.jpg",
     "specs": [],
     "summary": "Міжнародний стандарт Показники Додатковий захисний шар - Extreme Protection Загальна товщина ISO 24346 3,70 мм Товщина робочого шару ISO 24340 0,50 мм Вага ISO 23997 2500 г/м² Тип основи - Дубльована основа Спосіб укладання - Клейовий Ширина дошки, мм - 166 мм Направлення укладання - В одному напрямку Ефект обробки - Тиснення Одиниця виробництва продукції - Рулон Строк експлуатації в побутових приміщеннях - 15 років",
     "sourceUrl": "https://europolua.com/%D0%BB%D1%96%D0%BD%D0%BE%D0%BB%D0%B5%D1%83%D0%BC/%D1%96%D0%B4%D0%B8%D0%BB%D1%96%D1%8F-%D0%BD%D0%BE%D0%B2%D0%B0-%D0%B0%D1%82%D0%BB%D0%B0%D0%BD%D1%82%D0%B0-1"
@@ -450,7 +450,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/02-ідилія-нова-атланта-3.jpg",
+    "image": "products/02-ідилія-нова-атланта-3.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -465,7 +465,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/04-ідилія-нова-бретон-3.jpg",
+    "image": "products/04-ідилія-нова-бретон-3.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -480,7 +480,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/03-ідилія-нова-карузо-3.jpg",
+    "image": "products/03-ідилія-нова-карузо-3.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -495,7 +495,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/05-ідилія-нова-клео-1.jpg",
+    "image": "products/05-ідилія-нова-клео-1.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -510,7 +510,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/06-ідилія-нова-сохо-9.jpg",
+    "image": "products/06-ідилія-нова-сохо-9.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -525,7 +525,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/07-ідилія-нова-танго-3.jpg",
+    "image": "products/07-ідилія-нова-танго-3.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -540,7 +540,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ідилія Нова",
     "price": 585,
-    "image": "/products/08-ідилія-нова-танго-4.jpg",
+    "image": "products/08-ідилія-нова-танго-4.jpg",
     "specs": [
       "Загальна товщина: 3,70 мм",
       "товщина: 3,70 мм",
@@ -555,7 +555,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Каприз",
     "price": 310,
-    "image": "/products/44-каприз-квебек-2.jpg",
+    "image": "products/44-каприз-квебек-2.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -570,7 +570,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Квінтекс",
     "price": 500,
-    "image": "/products/72-квінтекс-гамбл-дуб-669-д.png",
+    "image": "products/72-квінтекс-гамбл-дуб-669-д.png",
     "specs": [
       "Товщина 2.5 мм",
       "Клас зносостійкості 23"
@@ -584,7 +584,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Комфорт",
     "price": 300,
-    "image": "/products/45-комфорт-бенгал-2.jpg",
+    "image": "products/45-комфорт-бенгал-2.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -599,7 +599,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Комфорт",
     "price": 300,
-    "image": "/products/48-комфорт-кадет-1.jpg",
+    "image": "products/48-комфорт-кадет-1.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -614,7 +614,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Комфорт",
     "price": 300,
-    "image": "/products/49-комфорт-спенсер-5.jpg",
+    "image": "products/49-комфорт-спенсер-5.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -629,7 +629,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Комфорт",
     "price": 300,
-    "image": "/products/46-комфорт-харвей-1.jpg",
+    "image": "products/46-комфорт-харвей-1.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -644,7 +644,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Комфорт",
     "price": 300,
-    "image": "/products/47-комфорт-харвей-3.jpg",
+    "image": "products/47-комфорт-харвей-3.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -659,7 +659,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Комфорт",
     "price": 300,
-    "image": "/products/50-комфорт-хорсел-3.jpg",
+    "image": "products/50-комфорт-хорсел-3.jpg",
     "specs": [
       "Загальна товщина: 3 мм",
       "товщина: 3 мм",
@@ -674,7 +674,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Олімпік",
     "price": 296,
-    "image": "/products/62-олімпік-еліот-7.jpg",
+    "image": "products/62-олімпік-еліот-7.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "Товщина робочого шару – 0,15 мм",
@@ -689,7 +689,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Олімпік",
     "price": 296,
-    "image": "/products/65-олімпік-медісон-5.jpg",
+    "image": "products/65-олімпік-медісон-5.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "Товщина робочого шару – 0,15 мм",
@@ -704,7 +704,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Олімпік",
     "price": 296,
-    "image": "/products/64-олімпік-медісон-6.jpg",
+    "image": "products/64-олімпік-медісон-6.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "Товщина робочого шару – 0,15 мм",
@@ -719,7 +719,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Олімпік",
     "price": 296,
-    "image": "/products/63-олімпік-флорида-2.jpg",
+    "image": "products/63-олімпік-флорида-2.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "Товщина робочого шару – 0,15 мм",
@@ -734,7 +734,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Піетро",
     "price": 480,
-    "image": "/products/73-піетро-дуб-гаванна-699.jpg",
+    "image": "products/73-піетро-дуб-гаванна-699.jpg",
     "specs": [
       "Товщина 2,25 мм"
     ],
@@ -747,7 +747,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/13-преміум-акрон-10.jpg",
+    "image": "products/13-преміум-акрон-10.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -762,7 +762,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/14-преміум-акрон-11.jpg",
+    "image": "products/14-преміум-акрон-11.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -777,7 +777,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/15-преміум-амелія-2.jpg",
+    "image": "products/15-преміум-амелія-2.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -792,7 +792,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/20-преміум-віспер-2.jpg",
+    "image": "products/20-преміум-віспер-2.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -807,7 +807,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/16-преміум-реймонд-1.jpg",
+    "image": "products/16-преміум-реймонд-1.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -822,7 +822,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/21-преміум-салєрно-4.jpg",
+    "image": "products/21-преміум-салєрно-4.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -837,7 +837,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/17-преміум-сохо-1.jpg",
+    "image": "products/17-преміум-сохо-1.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -852,7 +852,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/18-преміум-сохо-3.jpg",
+    "image": "products/18-преміум-сохо-3.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -867,7 +867,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Преміум",
     "price": 495,
-    "image": "/products/19-преміум-сохо-8.jpg",
+    "image": "products/19-преміум-сохо-8.jpg",
     "specs": [
       "Загальна товщина: 3,20 мм",
       "товщина: 3,20 мм",
@@ -882,7 +882,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Смарт",
     "price": 335,
-    "image": "/products/66-смарт-121600.jpg",
+    "image": "products/66-смарт-121600.jpg",
     "specs": [
       "Загальна товщина: 2,20 мм",
       "товщина: 2,20 мм",
@@ -897,7 +897,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Спрінт Про",
     "price": 355,
-    "image": "/products/26-спрінт-про-баден-3.jpg",
+    "image": "products/26-спрінт-про-баден-3.jpg",
     "specs": [
       "Загальна товщина: 1,80 мм",
       "товщина: 1,80 мм",
@@ -912,7 +912,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Спрінт Про",
     "price": 355,
-    "image": "/products/27-спрінт-про-базель-3.jpg",
+    "image": "products/27-спрінт-про-базель-3.jpg",
     "specs": [
       "Загальна товщина: 1,80 мм",
       "товщина: 1,80 мм",
@@ -927,7 +927,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Спрінт Про",
     "price": 355,
-    "image": "/products/28-спрінт-про-медано-1.jpg",
+    "image": "products/28-спрінт-про-медано-1.jpg",
     "specs": [
       "Загальна товщина: 1,80 мм",
       "товщина: 1,80 мм",
@@ -942,7 +942,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Спрінт Про",
     "price": 355,
-    "image": "/products/29-спрінт-про-медано-4.jpg",
+    "image": "products/29-спрінт-про-медано-4.jpg",
     "specs": [
       "Загальна товщина: 1,80 мм",
       "товщина: 1,80 мм",
@@ -957,7 +957,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Супрім",
     "price": 525,
-    "image": "/products/71-супрім-тасманія-дуб-970-д.jpg",
+    "image": "products/71-супрім-тасманія-дуб-970-д.jpg",
     "specs": [],
     "summary": "Вага 1 м2: 1950 г Додаткові характеристики антибактеріальний захист/антистатичні властивості/протиковзання Клас застосування 41 Країна виробництва Бельгія Структура покриття багатошаровий ПВХ Тип основи Tex Bac Товщина захисного шару, мм 0.40 Виробник (Бренд) Beauflor Ширина рулону (розмір), м 5 Колекція Supreme Сфера застосування побутове та комерційне використання Тип підлогового покриття лінолеум Загальна товщина, мм 2.90 Тепла підлога так",
     "sourceUrl": "https://europolua.com/%D0%BB%D1%96%D0%BD%D0%BE%D0%BB%D0%B5%D1%83%D0%BC/%D1%81%D1%83%D0%BF%D1%80%D1%96%D0%BC-%D1%82%D0%B0%D1%81%D0%BC%D0%B0%D0%BD%D1%96%D1%8F-%D0%B4%D1%83%D0%B1-970-%D0%B4"
@@ -968,7 +968,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ультра",
     "price": 486,
-    "image": "/products/69-ультра-кракед-дуб-2.jpg",
+    "image": "products/69-ультра-кракед-дуб-2.jpg",
     "specs": [
       "Товщина покриття: 4.8 мм"
     ],
@@ -981,7 +981,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Ультра",
     "price": 486,
-    "image": "/products/70-ультра-кракед-дуб-5.jpg",
+    "image": "products/70-ультра-кракед-дуб-5.jpg",
     "specs": [
       "Товщина покриття: 4.8 мм"
     ],
@@ -994,7 +994,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Форс",
     "price": 365,
-    "image": "/products/33-форс-віспер-4.jpg",
+    "image": "products/33-форс-віспер-4.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -1009,7 +1009,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Форс",
     "price": 365,
-    "image": "/products/34-форс-віспер-5.jpg",
+    "image": "products/34-форс-віспер-5.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -1024,7 +1024,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Форс",
     "price": 365,
-    "image": "/products/31-форс-канвас-1.jpg",
+    "image": "products/31-форс-канвас-1.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -1039,7 +1039,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Форс",
     "price": 365,
-    "image": "/products/30-форс-лінея-4.jpg",
+    "image": "products/30-форс-лінея-4.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -1054,7 +1054,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Форс",
     "price": 365,
-    "image": "/products/32-форс-тісе-3.jpg",
+    "image": "products/32-форс-тісе-3.jpg",
     "specs": [
       "Загальна товщина: 2,50 мм",
       "товщина: 2,50 мм",
@@ -1069,7 +1069,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Форум",
     "price": 350,
-    "image": "/products/68-форум-форест-3.jpg",
+    "image": "products/68-форум-форест-3.jpg",
     "specs": [],
     "summary": "Характеристики Тип материалу: Лінолеум Повне найменування: Лінолеум напівкомерційний JUTEKS FORUM - Ютекс Форум Бренд: JUTEKS - (Ютекс) Вид: Напівкомерційний Підвид: Утеплений Структура: Гетерогений багатослойний з теплою основою Основа: TEXTiLE Ширина, м: 2.0-2.5-3.0-3.5-4.0 Товщина, мм: 4.8 Клас горючості: КМ5 Клас, кл.: 32 Область призначення: спальня, кабінет, гостинна, кухня, коридор, невеликий офис, переговорна кімната, палати лікарень, ігрові кімнати дитячих садків Стійкість до хімії: Відмінна Особливості ко",
     "sourceUrl": "https://europolua.com/%D0%BB%D1%96%D0%BD%D0%BE%D0%BB%D0%B5%D1%83%D0%BC/%D1%84%D0%BE%D1%80%D1%83%D0%BC-%D1%84%D0%BE%D1%80%D0%B5%D1%81%D1%82-3"
@@ -1080,7 +1080,7 @@ export const products = [
     "category": "Лінолеум",
     "collection": "Фреш",
     "price": 300,
-    "image": "/products/61-фреш-фрапе-2.jpg",
+    "image": "products/61-фреш-фрапе-2.jpg",
     "specs": [
       "Загальна товщина: 2,70 мм",
       "товщина: 2,70 мм",
@@ -1095,7 +1095,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/80-lg-hausys-decotile-dsw-2361.png",
+    "image": "products/80-lg-hausys-decotile-dsw-2361.png",
     "specs": [
       "Товщина: 2,5 мм",
       "Захисний шар: 0,5 мм",
@@ -1110,7 +1110,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/79-lg-hausys-decotile-dsw-2369.jpg",
+    "image": "products/79-lg-hausys-decotile-dsw-2369.jpg",
     "specs": [
       "Товщина: 3 мм",
       "Захисний шар: 0,5 мм",
@@ -1125,7 +1125,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/78-lg-hausys-decotile-dsw-2370.jpg",
+    "image": "products/78-lg-hausys-decotile-dsw-2370.jpg",
     "specs": [
       "Товщина: 3 мм",
       "Захисний шар: 0,5 мм",
@@ -1140,7 +1140,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/81-lg-hausys-decotile-gsw-5717.png",
+    "image": "products/81-lg-hausys-decotile-gsw-5717.png",
     "specs": [
       "Товщина: 2,5 мм",
       "Захисний шар: 0,5 мм",
@@ -1155,7 +1155,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/77-lg-hausys-decotile-square-6243.jpg",
+    "image": "products/77-lg-hausys-decotile-square-6243.jpg",
     "specs": [],
     "summary": "Особливість даного дизайн вінілової плитки LG Decotile полягає в її розмірах. Розмір даної плитки 600 х 600 мм, це великий формат, який добре підходить для приміщень з великою площею. Кварц-вінілова, ПВХ або LVT (ЛВТ) плитка LG (ЛЖ) Decotile (Декотайл) — це сучасне та інноваційне підлогове покриття. Область застосування найширша, від жилих приміщень, до комерційних з високою ступіню прохідності (офіси, магазини, торгові центри, шкільні та дошкільні заклади та інші). Вінілова плитка LG Decotile має захисний шар 0,55 ",
     "sourceUrl": "https://europolua.com/%D0%BF%D0%B2%D1%85-%D0%BF%D0%BE%D0%BA%D1%80%D0%B8%D1%82%D1%82%D1%8F/lg-hausys-decotile-square-6243"
@@ -1166,7 +1166,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/76-lg-hausys-decotile-square-6244.jpg",
+    "image": "products/76-lg-hausys-decotile-square-6244.jpg",
     "specs": [],
     "summary": "Особливість даного дизайн вінілової плитки LG Decotile полягає в її розмірах. Розмір даної плитки 600 х 600 мм, це великий формат, який добре підходить для приміщень з великою площею. Кварц-вінілова, ПВХ або LVT (ЛВТ) плитка LG (ЛЖ) Decotile (Декотайл) — це сучасне та інноваційне підлогове покриття. Область застосування найширша, від жилих приміщень, до комерційних з високою ступіню прохідності (офіси, магазини, торгові центри, шкільні та дошкільні заклади та інші). Вінілова плитка LG Decotile має захисний шар 0,55 ",
     "sourceUrl": "https://europolua.com/%D0%BF%D0%B2%D1%85-%D0%BF%D0%BE%D0%BA%D1%80%D0%B8%D1%82%D1%82%D1%8F/lg-hausys-decotile-square-6244"
@@ -1177,7 +1177,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/75-lg-hausys-decotile-wood-1202.jpg",
+    "image": "products/75-lg-hausys-decotile-wood-1202.jpg",
     "specs": [
       "Товщина: 2,5 мм",
       "захисний шар 0,55 мм",
@@ -1192,7 +1192,7 @@ export const products = [
     "category": "ПВХ покриття",
     "collection": "LG Hausys Decotile",
     "price": 638,
-    "image": "/products/74-lg-hausys-decotile-wood-7826.jpg",
+    "image": "products/74-lg-hausys-decotile-wood-7826.jpg",
     "specs": [
       "Товщина: 2,5 мм",
       "захисний шар 0,55 мм",
