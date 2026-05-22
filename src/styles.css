@@ -1870,14 +1870,28 @@ address svg {
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 1000;
-  max-height: 200px;
+  z-index: 9999; /* Increased z-index to ensure it appears above keyboard */
+  max-height: 250px; /* Slightly taller for better usability */
   overflow-y: auto;
   margin-top: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Stronger shadow */
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+/* iOS specific overrides */
+@supports (-webkit-touch-callout: none) {
+  .calc-cell datalist {
+    max-height: 300px;
+    border: 1px solid #d0d0c8;
+    background: #fafafa;
+  }
+  
+  .calc-cell option {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
 }
 
 .calc-cell option {
