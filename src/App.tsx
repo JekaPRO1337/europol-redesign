@@ -390,11 +390,15 @@ function App() {
     setModalLength(5)
   }
 
-  // Home Calculator operations
-  const addCalcRoom = () => {
-    const newId = (rooms.length + 1).toString()
-    setRooms([...rooms, { id: newId, productName: '', productId: '', width: 3, length: 5 }])
-  }
+   // Home Calculator operations
+   const addCalcRoom = () => {
+     if (rooms.length >= 5) {
+       showToast('Максимальна кількість кімнат - 5');
+       return;
+     }
+     const newId = (rooms.length + 1).toString()
+     setRooms([...rooms, { id: newId, productName: '', productId: '', width: 3, length: 5 }])
+   }
 
   const removeCalcRoom = (id: string) => {
     if (rooms.length === 1) {
@@ -1044,6 +1048,7 @@ function App() {
 
                   <form onSubmit={handleCalcViberExport}>
                     <div className="calc-table-header">
+                      <div>Кімната</div>
                       <div>Покриття підлоги (почніть вводити назву)</div>
                       <div style={{ textAlign: 'center' }}>Ширина рулону (м)</div>
                       <div style={{ textAlign: 'center' }}>Довжина (м)</div>
@@ -1059,22 +1064,23 @@ function App() {
                         const cost = product ? Math.round(area * product.price) : 0
 
                         return (
-                          <div className="calc-row" key={room.id}>
-                            <div className="calc-cell">
-                              <input 
-                                list={`products-datalist-${room.id}`}
-                                value={room.productName}
-                                onChange={(e) => handleRoomProductSelect(room.id, e.target.value)}
-                                placeholder="Оберіть лінолеум або введіть назву..."
-                                required
-                                aria-label={`Покриття для кімнати ${idx + 1}`}
-                              />
-                              <datalist id={`products-datalist-${room.id}`}>
-                                {products.map((p) => (
-                                  <option key={p.id} value={`${cleanTitle(p.title)} (${p.price} грн/м²)`} />
-                                ))}
-                              </datalist>
-                            </div>
+                           <div className="calc-row" key={room.id}>
+                             <div className="calc-cell">
+                               <div className="calc-room-label">Кімната {idx + 1}</div>
+                               <input 
+                                 list={`products-datalist-${room.id}`}
+                                 value={room.productName}
+                                 onChange={(e) => handleRoomProductSelect(room.id, e.target.value)}
+                                 placeholder="Оберіть лінолеум або введіть назву..."
+                                 required
+                                 aria-label={`Покриття для кімнати ${idx + 1}`}
+                               />
+                               <datalist id={`products-datalist-${room.id}`}>
+                                 {products.map((p) => (
+                                   <option key={p.id} value={`${cleanTitle(p.title)} (${p.price} грн/м²)`} />
+                                 ))}
+                               </datalist>
+                             </div>
 
                             <div className="calc-cell">
                               <select 
