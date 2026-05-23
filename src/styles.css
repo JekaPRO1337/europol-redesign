@@ -1788,7 +1788,7 @@ address svg {
 }
 .calc-table-header {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr 1fr 40px;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px;
   gap: 12px;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--green);
@@ -1810,16 +1810,9 @@ address svg {
 }
 .calc-row {
   display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr 1fr 40px;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px;
   gap: 12px;
   align-items: center;
-}
-@media (max-width: 760px) {
-  .calc-row {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
 }
 @media (max-width: 760px) {
   .calc-row {

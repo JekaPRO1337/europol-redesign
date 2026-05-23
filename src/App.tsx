@@ -1045,7 +1045,7 @@ function App() {
 
                   <form onSubmit={handleCalcViberExport}>
                      <div className="calc-table-header">
-                       <div>Покриття підлоги</div>
+                       <div>Покриття підлоги (почніть вводити назву)</div>
                        <div style={{ textAlign: 'center' }}>Ширина рулону (м)</div>
                        <div style={{ textAlign: 'center' }}>Довжина (м)</div>
                        <div style={{ textAlign: 'right', paddingRight: '12px' }}>Площа (м²)</div>
