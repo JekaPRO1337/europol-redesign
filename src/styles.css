@@ -1788,7 +1788,7 @@ address svg {
 }
 .calc-table-header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px;
+  grid-template-columns: 3fr 1fr 1fr 1fr 1fr 40px;
   gap: 12px;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--green);
@@ -1810,9 +1810,16 @@ address svg {
 }
 .calc-row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 40px;
+  grid-template-columns: 3fr 1fr 1fr 1fr 1fr 40px;
   gap: 12px;
   align-items: center;
+}
+@media (max-width: 760px) {
+  .calc-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 }
 @media (max-width: 760px) {
   .calc-row {
@@ -1840,15 +1847,8 @@ address svg {
   gap: 4px;
 }
 
-.calc-room-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-.calc-cell input,
-.calc-cell select {
+.calc-cell select,
+.calc-cell input {
   width: 100%;
   height: 40px;
   border: 1px solid var(--line);
@@ -1857,96 +1857,17 @@ address svg {
   font-size: 13px;
   font-weight: 700;
   background: #ffffff;
-  box-sizing: border-box;
-  color: var(--ink);
-}
-
-/* Product input specific styling */
-.calc-cell input[list] {
-  position: relative;
-  padding-right: 32px; /* space for arrow */
-}
-
-/* Dropdown arrow for product input */
-.calc-cell input[list]::after {
-  content: "";
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid var(--muted);
-  transform: translateY(-50%);
-  pointer-events: none;
-  transition: transform 0.2s;
-}
-
-.calc-cell input[list]:focus::after,
-.calc-cell input[list]:not(:placeholder-shown)::after {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-/* Keep the arrow color on focus */
-.calc-cell input[list]:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 2px rgba(122, 158, 92, 0.2);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
 }
 
 .calc-cell select {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 8'%3E%3Cpath fill='none' stroke='%236B7280' stroke-width='1.5' d='m1 1 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
-  background-size: 10px;
-}
-
-.calc-cell select:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 2px rgba(122, 158, 92, 0.2);
-}
-
-/* Ensure select text color */
-.calc-cell select option {
-  color: var(--ink);
-  background: #ffffff;
-}
-
-.calc-cell datalist {
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: #ffffff;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 9999; /* Increased z-index to ensure it appears above keyboard */
-  max-height: 250px; /* Slightly taller for better usability */
-  overflow-y: auto;
-  margin-top: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* Stronger shadow */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-}
-
-/* iOS specific overrides */
-@supports (-webkit-touch-callout: none) {
-  .calc-cell datalist {
-    max-height: 300px;
-    border: 1px solid #d0d0c8;
-    background: #fafafa;
-  }
-  
-  .calc-cell option {
-    padding: 10px 14px;
-    font-size: 14px;
-  }
+  padding-right: 28px;
 }
 
 .calc-cell option {
