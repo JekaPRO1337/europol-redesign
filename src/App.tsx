@@ -728,14 +728,14 @@ function App() {
                     </div>
                     <div className="modal-calc-field">
                       <label htmlFor="modal-length-input">Довжина відрізу (м)</label>
-                      <input 
-                        id="modal-length-input"
-                        type="number" 
-                        min={0.5} 
-                        step={0.1} 
-                        value={modalLength}
-                        onChange={(e) => setModalLength(Number(e.target.value))}
-                      />
+                       <input 
+                         id="modal-length-input"
+                         type="number" 
+                         min={0.5} 
+                         step={0.1} 
+                         value={modalLength || ''}
+                         onChange={(e) => setModalLength(e.target.value === '' ? 0 : Number(e.target.value))}
+                       />
                     </div>
                   </div>
                   
@@ -1097,8 +1097,8 @@ function App() {
                                type="number" 
                                step={0.1}
                                min={0.5}
-                               value={room.length} 
-                               onChange={(e) => handleRoomDimensionChange(room.id, 'length', Number(e.target.value))}
+                               value={room.length || ''}
+                               onChange={(e) => handleRoomDimensionChange(room.id, 'length', e.target.value === '' ? 0 : Number(e.target.value))}
                                placeholder="Довжина"
                                required
                                aria-label={`Довжина кімнати ${idx + 1}`}
