@@ -1063,76 +1063,71 @@ function App() {
                         const product = products.find((p) => p.id === room.productId)
                         const cost = product ? Math.round(area * product.price) : 0
 
-                        return (
-                           <div className="calc-row" key={room.id}>
-                             <div className="calc-cell">
-                               <div className="calc-room-label">Кімната {idx + 1}</div>
-                                <input 
-                                  list={`products-datalist-${room.id}`}
-                                  value={room.productName}
-                                  onChange={(e) => handleRoomProductSelect(room.id, e.target.value)}
-                                  placeholder="Оберіть лінолеум або введіть назву..."
-                                  required
-                                  aria-label={`Покриття для кімнати ${idx + 1}`}
-                                  autoComplete="off"
-                                />
-                               <datalist id={`products-datalist-${room.id}`}>
-                                 {products.map((p) => (
-                                   <option key={p.id} value={`${cleanTitle(p.title)} (${p.price} грн/м²)`} />
-                                 ))}
-                               </datalist>
-                             </div>
-
-                            <div className="calc-cell">
-                              <select 
-                                value={room.width} 
-                                onChange={(e) => handleRoomDimensionChange(room.id, 'width', Number(e.target.value))}
-                                aria-label={`Ширина рулону для кімнати ${idx + 1}`}
-                              >
-                                <option value={1.5}>1.5 м</option>
-                                <option value={2}>2.0 м</option>
-                                <option value={2.5}>2.5 м</option>
-                                <option value={3}>3.0 м</option>
-                                <option value={3.5}>3.5 м</option>
-                                <option value={4}>4.0 м</option>
-                              </select>
-                            </div>
-
-                            <div className="calc-cell">
-                              <input 
-                                type="number" 
-                                step={0.1}
-                                min={0.5}
-                                value={room.length} 
-                                onChange={(e) => handleRoomDimensionChange(room.id, 'length', Number(e.target.value))}
-                                placeholder="Довжина"
-                                required
-                                aria-label={`Довжина кімнати ${idx + 1}`}
-                              />
-                            </div>
-
-                            <div className="calc-cell-text" data-label="Площа">
-                              <span>{area.toFixed(1)} м²</span>
-                            </div>
-
-                            <div className="calc-cell-text" data-label="Вартість">
-                              <strong>{cost > 0 ? formatTotal(cost) : '—'}</strong>
-                            </div>
-
-                            <div className="calc-cell calc-row-delete-mobile">
-                              <button 
-                                className="button secondary" 
-                                type="button" 
-                                onClick={() => removeCalcRoom(room.id)}
-                                style={{ padding: '0', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--line)', color: 'var(--red)', background: '#fff' }}
-                                title="Видалити приміщення"
-                                aria-label={`Видалити кімнату ${idx + 1}`}
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                          </div>
-                        )
+                          return <div className="calc-row" key={room.id}>
+                                <div className="calc-cell">
+                                  <div className="calc-room-label">Кімната {idx + 1}</div>
+                                </div>
+                                <div className="calc-cell">
+                                  <input 
+                                    list={`products-datalist-${room.id}`}
+                                    value={room.productName}
+                                    onChange={(e) => handleRoomProductSelect(room.id, e.target.value)}
+                                    placeholder="Оберіть лінолеум або введіть назву..."
+                                    required
+                                    autoComplete="off"
+                                    aria-label={`Покриття для кімнати ${idx + 1}`}
+                                  />
+                                  <datalist id={`products-datalist-${room.id}`}>
+                                    {products.map((p) => (
+                                      <option key={p.id} value={`${cleanTitle(p.title)} (${p.price} грн/м²)`} />
+                                    ))}
+                                  </datalist>
+                                </div>
+                                <div className="calc-cell">
+                                  <select 
+                                    value={room.width} 
+                                    onChange={(e) => handleRoomDimensionChange(room.id, 'width', Number(e.target.value))}
+                                    aria-label={`Ширина рулону для кімнати ${idx + 1}`}
+                                  >
+                                    <option value={1.5}>1.5 м</option>
+                                    <option value={2}>2.0 м</option>
+                                    <option value={2.5}>2.5 м</option>
+                                    <option value={3}>3.0 м</option>
+                                    <option value={3.5}>3.5 м</option>
+                                    <option value={4}>4.0 м</option>
+                                  </select>
+                                </div>
+                                <div className="calc-cell">
+                                  <input 
+                                    type="number" 
+                                    step={0.1}
+                                    min={0.5}
+                                    value={room.length} 
+                                    onChange={(e) => handleRoomDimensionChange(room.id, 'length', Number(e.target.value))}
+                                    placeholder="Довжина"
+                                    required
+                                    aria-label={`Довжина кімнати ${idx + 1}`}
+                                  />
+                                </div>
+                                <div className="calc-cell-text" data-label="Площа">
+                                  <span>{area.toFixed(1)} м²</span>
+                                </div>
+                                <div className="calc-cell-text" data-label="Вартість">
+                                  <strong>{cost > 0 ? formatTotal(cost) : '—'}</strong>
+                                </div>
+                                <div className="calc-cell calc-row-delete-mobile">
+                                  <button 
+                                    className="button secondary" 
+                                    type="button" 
+                                    onClick={() => removeCalcRoom(room.id)}
+                                    style={{ padding: '0', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--line)', color: 'var(--red)', background: '#fff' }}
+                                    title="Видалити приміщення"
+                                    aria-label={`Видалити кімнату ${idx + 1}`}
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                </div>
+                              </div>;
                       })}
                     </div>
 
