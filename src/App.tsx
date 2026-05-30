@@ -6,11 +6,13 @@ import {
   Check,
   ChevronDown,
   MapPin,
+  MessageCircle,
   Navigation,
   Phone,
   RefreshCcw,
   Ruler,
   Search,
+  Send,
   ShieldCheck,
   SlidersHorizontal,
   Truck,
@@ -30,6 +32,7 @@ import {
   type CalculatorProductPayload,
   type CrmOrderItemInput,
 } from './lib/crm'
+import { sendTelegramNotification } from './lib/notifications'
 
 type CategoryFilter = 'Усі' | ProductCategory
 type SortMode = 'popular' | 'price-asc' | 'price-desc'
@@ -465,8 +468,8 @@ function App() {
     }, 0)
   }, [rooms])
 
-  // CRM lead save + Viber export for room calculator.
-  const handleCalcViberExport = async (e: React.FormEvent) => {
+  // CRM lead save + Telegram notification for room calculator.
+  const handleCalcSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     const cleanPhone = calcPhone.replace(/\D/g, '')
@@ -498,44 +501,37 @@ function App() {
     })
 
     let message = `📐 Запит на прорахунок кімнат:\n\n`
-    if (calcPhone) {
-      message += `📞 Контактний телефон: ${calcPhone}\n\n`
-    }
+    message += `📞 Контактний телефон: ${calcPhone}\n\n`
     message += `🏢 Список приміщень:\n`
 
-    let unpriced = false
     rooms.forEach((room, idx) => {
       const area = room.width * room.length
       const product = products.find((p) => p.id === room.productId)
-      
-      if (product) {
-        const cost = Math.round(area * product.price)
-        message += `${idx + 1}. Кімната ${idx + 1}: ${cleanTitle(product.title)} (${product.category})\n`
-        message += `   Розмір: ${room.width}м x ${room.length}м | Площа: ${area.toFixed(1)} м²\n`
-        message += `   Ціна: ${product.price} грн/м² | Вартість: ${cost} грн\n\n`
-      } else {
-        unpriced = true
-        message += `${idx + 1}. Кімната ${idx + 1}: Покриття не обрано (${room.productName || 'Не вказано'})\n`
-        message += `   Розмір: ${room.width}м x ${room.length}м | Площа: ${area.toFixed(1)} м²\n\n`
-      }
+      const cost = product ? Math.round(area * product.price) : 0
+
+      message += `${idx + 1}. Кімната ${idx + 1}: ${product ? cleanTitle(product.title) : 'Не обрано'} (${product?.category ?? ''})`
+      message += `\n   Розмір: ${room.width}м x ${room.length}м | Площа: ${area.toFixed(1)} м²`
+      if (cost > 0) message += `\n   Ціна: ${product!.price} грн/м² | Вартість: ${cost} грн`
+      message += `\n\n`
     })
 
     message += `-------------------------\n`
     message += `📐 Загальна площа: ${calcTotalArea.toFixed(1)} м²\n`
     if (calcTotalPrice > 0) {
-      message += `💰 Попередня сума: ${formatTotal(calcTotalPrice)}${unpriced ? ' (+необрані кімнати)' : ''}\n`
+      message += `💰 Попередня сума: ${formatTotal(calcTotalPrice)}\n`
     }
-    message += `\nБудь ласка, уточніть наявність цих розмірів на складі Європол.`
+    message += `\nНадіслано з сайту Європол.`
 
     setIsSavingCalculator(true)
 
     try {
-      await createCalculatorRequest({
+      const requestId = await createCalculatorRequest({
         selected_products: selectedProducts,
         calculated_price: calcTotalPrice,
         phone: calcPhone.trim(),
         comment: `Загальна площа: ${calcTotalArea.toFixed(1)} м². ${calcTotalPrice > 0 ? `Попередня сума: ${formatTotal(calcTotalPrice)}.` : 'Сума не розрахована.'}`,
       })
+      message = `ID запиту: ${requestId}\n\n${message}`
     } catch (error) {
       console.error(error)
       showToast('Не вдалося зберегти запит у CRM. Перевір Supabase/RLS.')
@@ -543,20 +539,15 @@ function App() {
       return
     }
 
-    navigator.clipboard.writeText(message)
-      .then(() => {
-        showToast('Прорахунок збережено в CRM! Відкриваємо Viber...')
-        setSuccessOrderDetails(message)
-        // Delay opening to let state updates settle
-        setTimeout(() => {
-          window.open(`viber://chat?number=%2B380503089909`, '_blank')
-        }, 800)
-      })
-      .catch((err) => {
-        console.error('Failed to copy', err)
-        showToast('Помилка копіювання. Спробуйте ще раз.')
-      })
-      .finally(() => setIsSavingCalculator(false))
+    // Send Telegram notification (fire-and-forget)
+    sendTelegramNotification(message)
+
+    // Copy to clipboard as backup
+    navigator.clipboard.writeText(message).catch(() => {})
+
+    showToast('Прорахунок збережено та відправлено менеджеру!')
+    setSuccessOrderDetails(message)
+    setIsSavingCalculator(false)
   }
 
   // Cart Totals
@@ -579,7 +570,7 @@ function App() {
 
   const grandTotal = cartTotalPrice + deliveryCost
 
-  // Cart form submit: save to CRM first, then copy/open Viber as an extra convenience channel.
+  // Cart form submit: save to CRM + send Telegram notification.
   const handleCartSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!clientName.trim()) {
@@ -673,19 +664,15 @@ function App() {
       return
     }
 
-    navigator.clipboard.writeText(message)
-      .then(() => {
-        showToast('Заявку збережено в CRM! Відкриваємо Viber...')
-        setSuccessOrderDetails(message)
-        setTimeout(() => {
-          window.open(`viber://chat?number=%2B380503089909`, '_blank')
-        }, 800)
-      })
-      .catch((err) => {
-        console.error('Failed to copy', err)
-        showToast('Помилка копіювання.')
-      })
-      .finally(() => setIsSavingOrder(false))
+    // Send Telegram notification (fire-and-forget)
+    sendTelegramNotification(message)
+
+    // Copy to clipboard as backup
+    navigator.clipboard.writeText(message).catch(() => {})
+
+    showToast('Заявку збережено та відправлено менеджеру!')
+    setSuccessOrderDetails(message)
+    setIsSavingOrder(false)
   }
 
   // Payment providers are intentionally not connected yet. This keeps the future UI path visible.
@@ -710,34 +697,46 @@ function App() {
             <div className="success-icon-circle">
               <Check size={32} />
             </div>
-            <h3>Запит сформовано!</h3>
+            <h3>Заявку відправлено!</h3>
             <p>
-              Деталі вашого прорахунку успішно скопійовано в буфер обміну. 
-              Зараз вас буде перенаправлено до Viber менеджера Європол. 
-              <strong> Будь ласка, вставте скопійований текст (Ctrl+V) у повідомлення та надішліть його!</strong>
+              Вашу заявку збережено та відправлено менеджеру Європол.
+              <strong> Ми зв'яжемося з вами найближчим часом!</strong>
             </p>
             <div style={{ background: '#f5f7f6', padding: '12px', borderRadius: '8px', fontSize: '12px', textAlign: 'left', maxHeight: '150px', overflowY: 'auto', marginBottom: '20px', whiteSpace: 'pre-line', fontFamily: 'monospace', border: '1px solid var(--line)' }}>
               {successOrderDetails}
             </div>
+            <p style={{ fontSize: '12px', color: 'var(--muted)', fontWeight: 700, margin: '0 0 12px' }}>
+              Потрібна допомога? Напишіть нам:
+            </p>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button 
-                className="button secondary full" 
+              <button
+                className="button full"
+                style={{ background: '#229ed9', color: '#fff', border: 'none' }}
                 onClick={() => {
-                  navigator.clipboard.writeText(successOrderDetails)
-                  showToast('Скопійовано!')
+                  window.open(`https://t.me/europol_kremenchuk`, '_blank')
                 }}
               >
-                Копіювати ще раз
+                <Send size={18} />
+                <span>Telegram</span>
               </button>
-              <button 
-                className="button primary full" 
+              <button
+                className="button secondary full"
+                style={{ background: '#7360f2', color: '#fff', border: 'none' }}
                 onClick={() => {
                   window.open(`viber://chat?number=%2B380503089909`, '_blank')
                 }}
               >
-                У Viber
+                <MessageCircle size={18} />
+                <span>Viber</span>
               </button>
             </div>
+            <button
+              className="button secondary full"
+              style={{ marginTop: '10px' }}
+              onClick={() => setSuccessOrderDetails(null)}
+            >
+              Закрити
+            </button>
             <button className="modal-close-btn" style={{ top: '12px', right: '12px' }} onClick={() => setSuccessOrderDetails(null)}>
               <X size={18} />
             </button>
@@ -1025,8 +1024,8 @@ function App() {
                   </div>
 
                   <button className="button primary full" disabled={isSavingOrder} type="submit" style={{ marginTop: '4px' }}>
-                    <ShoppingCart size={18} />
-                    <span>{isSavingOrder ? 'Зберігаємо заявку...' : 'Зберегти заявку і відправити у Viber'}</span>
+                    <Send size={18} />
+                    <span>{isSavingOrder ? 'Відправляємо...' : 'Оформити заявку'}</span>
                   </button>
                 </form>
 
@@ -1168,11 +1167,11 @@ function App() {
                     <h3>Професійний калькулятор кімнат</h3>
                     <p>
                       Додавайте кімнати, обирайте покриття зі списку з автопошуком та задавайте індивідуальні розміри. 
-                      Ми автоматично розрахуємо загальну квадратуру та суму, щоб ви могли уточнити наявність у Viber.
+                      Ми автоматично розрахуємо загальну квадратуру та суму. Менеджер зв'яжеться з вами для уточнення наявності.
                     </p>
                   </div>
 
-                  <form onSubmit={handleCalcViberExport}>
+                  <form onSubmit={handleCalcSubmit}>
                      <div className="calc-table-header">
                        <div>Покриття підлоги (почніть вводити назву)</div>
                        <div style={{ textAlign: 'center' }}>Ширина рулону (м)</div>
@@ -1282,8 +1281,8 @@ function App() {
                           style={{ maxWidth: '220px', minHeight: '44px' }}
                         />
                         <button className="calc-viber-btn" disabled={isSavingCalculator} type="submit">
-                          <Phone size={18} />
-                          <span>{isSavingCalculator ? 'Зберігаємо...' : 'Зберегти і відправити у Viber'}</span>
+                          <Send size={18} />
+                          <span>{isSavingCalculator ? 'Відправляємо...' : 'Зберегти прорахунок'}</span>
                         </button>
                       </div>
                     </div>

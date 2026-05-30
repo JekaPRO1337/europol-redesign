@@ -57,6 +57,9 @@ export default function AdminPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [period, setPeriod] = useState<'7_days' | '30_days' | '90_days' | 'all'>('30_days')
   const [hoveredDay, setHoveredDay] = useState<any | null>(null)
+  const [activeTab, setActiveTab] = useState<'orders' | 'calculator'>('orders')
+  const [showOrdersLine, setShowOrdersLine] = useState(true)
+  const [showCalcsLine, setShowCalcsLine] = useState(true)
 
   const periodThresholdDate = useMemo(() => {
     if (period === 'all') return null
@@ -90,13 +93,16 @@ export default function AdminPage() {
 
     for (let i = numDays - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
-      const dateStr = d.toISOString().split('T')[0]
+      // Use local timezone instead of UTC
+      const dateStr = d.toLocaleDateString('en-CA') // en-CA gives YYYY-MM-DD in local timezone
       const label = d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })
       result.push({ dateStr, label, orders: 0, calcs: 0, revenue: 0 })
     }
 
     orders.forEach((o) => {
-      const dStr = o.created_at.split('T')[0]
+      // Parse created_at as local date
+      const orderDate = new Date(o.created_at)
+      const dStr = orderDate.toLocaleDateString('en-CA')
       const match = result.find((item) => item.dateStr === dStr)
       if (match) {
         match.orders++
@@ -105,7 +111,9 @@ export default function AdminPage() {
     })
 
     calculatorRequests.forEach((c) => {
-      const dStr = c.created_at.split('T')[0]
+      // Parse created_at as local date
+      const calcDate = new Date(c.created_at)
+      const dStr = calcDate.toLocaleDateString('en-CA')
       const match = result.find((item) => item.dateStr === dStr)
       if (match) {
         match.calcs++
@@ -360,15 +368,49 @@ export default function AdminPage() {
               Активність замовлень та запитів калькулятора по днях
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', fontSize: '13px', fontWeight: 750 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => setShowOrdersLine(!showOrdersLine)}
+              type="button"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                border: `1px solid ${showOrdersLine ? 'var(--green)' : 'var(--line)'}`,
+                borderRadius: '6px',
+                background: showOrdersLine ? 'var(--soft-green)' : '#fff',
+                color: showOrdersLine ? 'var(--green-dark)' : 'var(--muted)',
+                fontSize: '12px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 160ms ease'
+              }}
+            >
               <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }}></span>
               Замовлення
-            </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            </button>
+            <button
+              onClick={() => setShowCalcsLine(!showCalcsLine)}
+              type="button"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                border: `1px solid ${showCalcsLine ? '#68766a' : 'var(--line)'}`,
+                borderRadius: '6px',
+                background: showCalcsLine ? '#f0f0f0' : '#fff',
+                color: showCalcsLine ? '#68766a' : 'var(--muted)',
+                fontSize: '12px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 160ms ease'
+              }}
+            >
               <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#68766a', display: 'inline-block' }}></span>
               Калькулятор
-            </span>
+            </button>
           </div>
         </div>
 
@@ -420,14 +462,14 @@ export default function AdminPage() {
               })}
 
               {/* Fill Gradient under lines */}
-              {ordersAreaPath && <path d={ordersAreaPath} fill="url(#orders-grad)" pointerEvents="none" />}
-              {calcsAreaPath && <path d={calcsAreaPath} fill="url(#calcs-grad)" pointerEvents="none" />}
+              {showOrdersLine && ordersAreaPath && <path d={ordersAreaPath} fill="url(#orders-grad)" pointerEvents="none" />}
+              {showCalcsLine && calcsAreaPath && <path d={calcsAreaPath} fill="url(#calcs-grad)" pointerEvents="none" />}
 
               {/* Line Paths */}
-              {ordersLinePath && (
+              {showOrdersLine && ordersLinePath && (
                 <path d={ordersLinePath} fill="none" stroke="var(--green)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />
               )}
-              {calcsLinePath && (
+              {showCalcsLine && calcsLinePath && (
                 <path d={calcsLinePath} fill="none" stroke="#68766a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />
               )}
 
@@ -436,8 +478,8 @@ export default function AdminPage() {
                 const x = getX(idx)
                 return (
                   <g key={idx} pointerEvents="none">
-                    {day.orders > 0 && <circle cx={x} cy={getY(day.orders)} r="4" fill="var(--green)" stroke="#fff" strokeWidth="1.5" />}
-                    {day.calcs > 0 && <circle cx={x} cy={getY(day.calcs)} r="4" fill="#68766a" stroke="#fff" strokeWidth="1.5" />}
+                    {showOrdersLine && day.orders > 0 && <circle cx={x} cy={getY(day.orders)} r="4" fill="var(--green)" stroke="#fff" strokeWidth="1.5" />}
+                    {showCalcsLine && day.calcs > 0 && <circle cx={x} cy={getY(day.calcs)} r="4" fill="#68766a" stroke="#fff" strokeWidth="1.5" />}
                   </g>
                 )
               })}
@@ -532,12 +574,36 @@ export default function AdminPage() {
 
       {errorMessage && <div className="admin-error">{errorMessage}</div>}
 
-      <section className="admin-workbench">
-        <div className="admin-panel">
-          <div className="admin-panel-head">
-            <h2>Замовлення</h2>
-            <span>{filteredOrders.length}</span>
-          </div>
+      {/* Tab Navigation */}
+      <div className="admin-tabs" style={{ display: 'flex', gap: '10px', marginBottom: '18px', width: 'min(100%, 1680px)', marginInline: 'auto' }}>
+        <button
+          className={`admin-tab-btn ${activeTab === 'orders' ? 'is-active' : ''}`}
+          onClick={() => setActiveTab('orders')}
+          type="button"
+        >
+          <PackageCheck size={18} />
+          <span>Замовлення</span>
+          <span className="tab-badge">{filteredOrders.length}</span>
+        </button>
+        <button
+          className={`admin-tab-btn ${activeTab === 'calculator' ? 'is-active' : ''}`}
+          onClick={() => setActiveTab('calculator')}
+          type="button"
+        >
+          <Calculator size={18} />
+          <span>Калькулятор</span>
+          <span className="tab-badge">{filteredCalculatorRequests.length}</span>
+        </button>
+      </div>
+
+      {activeTab === 'orders' ? (
+        <>
+          <section className="admin-workbench">
+            <div className="admin-panel">
+              <div className="admin-panel-head">
+                <h2>Замовлення</h2>
+                <span>{filteredOrders.length}</span>
+              </div>
 
           <div className="admin-table-wrap">
             {filteredOrders.length === 0 ? (
@@ -653,12 +719,13 @@ export default function AdminPage() {
           </div>
         </div>
       </section>
-
-      <section className="admin-panel">
-        <div className="admin-panel-head">
-          <h2>Запити калькулятора</h2>
-          <span>{filteredCalculatorRequests.length}</span>
-        </div>
+        </>
+      ) : (
+        <section className="admin-panel">
+          <div className="admin-panel-head">
+            <h2>Запити калькулятора</h2>
+            <span>{filteredCalculatorRequests.length}</span>
+          </div>
         <div className="admin-table-wrap">
           {filteredCalculatorRequests.length === 0 ? (
             <p className="admin-empty">Запитів калькулятора поки немає.</p>
@@ -718,6 +785,7 @@ export default function AdminPage() {
           )}
         </div>
       </section>
+      )}
     </main>
   )
 }

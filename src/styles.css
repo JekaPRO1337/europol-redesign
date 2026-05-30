@@ -2372,3 +2372,70 @@ address svg {
     grid-template-columns: 1fr;
   }
 }
+
+/* Admin Tab Buttons */
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  width: min(100%, 1680px);
+  margin-inline: auto;
+}
+
+.admin-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.admin-tab-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--soft-green);
+}
+
+.admin-tab-btn.is-active {
+  background: var(--green);
+  color: #ffffff;
+  border-color: var(--green);
+}
+
+.admin-tab-btn .tab-badge {
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 12px;
+  background: var(--soft);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-tab-btn.is-active .tab-badge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+@media (max-width: 760px) {
+  .admin-tabs {
+    flex-direction: column;
+  }
+  
+  .admin-tab-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
