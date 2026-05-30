@@ -475,6 +475,13 @@ function App() {
       return
     }
 
+    // Validate that every room has a linoleum selected
+    const unselectedRooms = rooms.filter((room) => !room.productId)
+    if (unselectedRooms.length > 0) {
+      showToast(`Будь ласка, оберіть лінолеум у ${unselectedRooms.length === 1 ? 'кімнаті' : 'кімнатах'} ${unselectedRooms.map((_, i) => rooms.indexOf(unselectedRooms[i]) + 1).join(', ')}!`)
+      return
+    }
+
     const selectedProducts: CalculatorProductPayload[] = rooms.map((room, idx) => {
       const product = products.find((p) => p.id === room.productId)
       const area = room.width * room.length
