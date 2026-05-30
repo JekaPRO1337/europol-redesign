@@ -10,6 +10,7 @@ export type Product = {
   specs: string[]
   summary: string
   sourceUrl: string
+  available?: boolean
 }
 
 export const products = [

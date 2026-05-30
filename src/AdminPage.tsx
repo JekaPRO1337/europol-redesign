@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   Eye,
   LogOut,
+  Package,
   PackageCheck,
   Phone,
   RefreshCcw,
@@ -336,6 +337,10 @@ export default function AdminPage() {
               />
             </label>
           </div>
+          <a className="button secondary" href="/#/products">
+            <Package size={17} />
+            <span>Товари</span>
+          </a>
           <a className="button secondary" href="/">
             На сайт
           </a>
