@@ -386,6 +386,7 @@ export default function AdminPage() {
                 onChange={() => setShowOrdersLine(!showOrdersLine)}
                 className="chart-toggle-checkbox"
               />
+              <span className="chart-toggle-slider"></span>
               <span className="chart-toggle-text">Замовлення</span>
             </label>
             <label className="chart-toggle-label">
@@ -395,6 +396,7 @@ export default function AdminPage() {
                 onChange={() => setShowCalcsLine(!showCalcsLine)}
                 className="chart-toggle-checkbox"
               />
+              <span className="chart-toggle-slider"></span>
               <span className="chart-toggle-text">Калькулятор</span>
             </label>
           </div>
