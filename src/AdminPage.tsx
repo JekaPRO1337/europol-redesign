@@ -55,28 +55,32 @@ export default function AdminPage() {
   const [selectedOrder, setSelectedOrder] = useState<OrderRecord | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [period, setPeriod] = useState<'7_days' | '30_days' | '90_days' | 'all'>('30_days')
+  const [startDate, setStartDate] = useState<string>('')
+  const [endDate, setEndDate] = useState<string>('')
   const [hoveredDay, setHoveredDay] = useState<any | null>(null)
   const [activeTab, setActiveTab] = useState<'orders' | 'calculator'>('orders')
   const [showOrdersLine, setShowOrdersLine] = useState(true)
   const [showCalcsLine, setShowCalcsLine] = useState(true)
 
-  const periodThresholdDate = useMemo(() => {
-    if (period === 'all') return null
-    const now = new Date()
-    const days = period === '7_days' ? 7 : period === '30_days' ? 30 : 90
-    return new Date(now.getFullYear(), now.getMonth(), now.getDate() - days, 0, 0, 0)
-  }, [period])
-
   const filteredOrders = useMemo(() => {
-    if (!periodThresholdDate) return orders
-    return orders.filter((o) => new Date(o.created_at) >= periodThresholdDate)
-  }, [orders, periodThresholdDate])
+    if (!startDate && !endDate) return orders
+    return orders.filter((o) => {
+      const orderDate = new Date(o.created_at)
+      if (startDate && orderDate < new Date(startDate)) return false
+      if (endDate && orderDate > new Date(endDate + 'T23:59:59')) return false
+      return true
+    })
+  }, [orders, startDate, endDate])
 
   const filteredCalculatorRequests = useMemo(() => {
-    if (!periodThresholdDate) return calculatorRequests
-    return calculatorRequests.filter((c) => new Date(c.created_at) >= periodThresholdDate)
-  }, [calculatorRequests, periodThresholdDate])
+    if (!startDate && !endDate) return calculatorRequests
+    return calculatorRequests.filter((c) => {
+      const calcDate = new Date(c.created_at)
+      if (startDate && calcDate < new Date(startDate)) return false
+      if (endDate && calcDate > new Date(endDate + 'T23:59:59')) return false
+      return true
+    })
+  }, [calculatorRequests, startDate, endDate])
 
   const stats = useMemo(() => {
     const newOrders = filteredOrders.filter((order) => order.status === 'new').length
@@ -87,20 +91,20 @@ export default function AdminPage() {
   }, [filteredOrders])
 
   const chartData = useMemo(() => {
-    const now = new Date()
-    const numDays = period === '7_days' ? 7 : period === '30_days' ? 30 : period === '90_days' ? 90 : 30
+    const start = startDate ? new Date(startDate) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    const end = endDate ? new Date(endDate + 'T23:59:59') : new Date()
     const result: { dateStr: string; label: string; orders: number; calcs: number; revenue: number }[] = []
 
-    for (let i = numDays - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
-      // Use local timezone instead of UTC
-      const dateStr = d.toLocaleDateString('en-CA') // en-CA gives YYYY-MM-DD in local timezone
-      const label = d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })
+    // Generate date range
+    const currentDate = new Date(start)
+    while (currentDate <= end) {
+      const dateStr = currentDate.toLocaleDateString('en-CA')
+      const label = currentDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })
       result.push({ dateStr, label, orders: 0, calcs: 0, revenue: 0 })
+      currentDate.setDate(currentDate.getDate() + 1)
     }
 
     orders.forEach((o) => {
-      // Parse created_at as local date
       const orderDate = new Date(o.created_at)
       const dStr = orderDate.toLocaleDateString('en-CA')
       const match = result.find((item) => item.dateStr === dStr)
@@ -111,7 +115,6 @@ export default function AdminPage() {
     })
 
     calculatorRequests.forEach((c) => {
-      // Parse created_at as local date
       const calcDate = new Date(c.created_at)
       const dStr = calcDate.toLocaleDateString('en-CA')
       const match = result.find((item) => item.dateStr === dStr)
@@ -121,7 +124,7 @@ export default function AdminPage() {
     })
 
     return result
-  }, [orders, calculatorRequests, period])
+  }, [orders, calculatorRequests, startDate, endDate])
 
   const maxVal = useMemo(() => {
     const val = Math.max(...chartData.map((d) => Math.max(d.orders, d.calcs)), 5)
@@ -313,19 +316,26 @@ export default function AdminPage() {
           <h1>Заявки Європол</h1>
         </div>
         <div className="admin-actions">
-          <label className="select-field" style={{ margin: 0 }}>
-            <select 
-              value={period} 
-              onChange={(e) => setPeriod(e.target.value as any)} 
-              style={{ minHeight: '38px', background: '#fff', fontSize: '13px', border: '1px solid var(--line)', borderRadius: '8px', padding: '0 10px', fontWeight: 800 }}
-              aria-label="Період аналітики"
-            >
-              <option value="7_days">Останні 7 днів</option>
-              <option value="30_days">Останні 30 днів</option>
-              <option value="90_days">Останні 90 днів</option>
-              <option value="all">За весь час</option>
-            </select>
-          </label>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700 }}>
+              Від:
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                style={{ padding: '6px 8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, minHeight: '32px' }}
+              />
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700 }}>
+              До:
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                style={{ padding: '6px 8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, minHeight: '32px' }}
+              />
+            </label>
+          </div>
           <a className="button secondary" href="/">
             На сайт
           </a>
