@@ -423,7 +423,7 @@ export default function AdminPage() {
                 return (
                   <g key={idx}>
                     <line x1={paddingX} y1={y} x2={width - paddingX} y2={y} stroke="var(--line)" strokeDasharray="3 3" />
-                    <text x={paddingX - 10} y={y + 4} textAnchor="end" fill="var(--muted)" fontSize="10" fontWeight="700">{gridVal}</text>
+                    <text x={48} y={y + 4} textAnchor="end" fill="var(--muted)" fontSize="12" fontWeight="700">{gridVal}</text>
                   </g>
                 )
               })}
@@ -490,7 +490,7 @@ export default function AdminPage() {
                 if (idx % interval !== 0 && idx !== chartData.length - 1) return null
                 const x = getX(idx)
                 return (
-                  <text key={idx} x={x} y={height - paddingY + 18} textAnchor="middle" fill="var(--muted)" fontSize="9" fontWeight="700">
+                  <text key={idx} x={x} y={height - paddingY + 18} textAnchor="middle" fill="var(--muted)" fontSize="11" fontWeight="700">
                     {day.label}
                   </text>
                 )

@@ -2460,10 +2460,10 @@ address svg {
 .chart-toggle-label {
   display: inline-flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
   cursor: pointer;
   user-select: none;
-  padding: 14px 24px;
+  padding: 8px 12px;
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -2512,11 +2512,16 @@ address svg {
   font-size: 14px;
   font-weight: 700;
   color: var(--ink);
-  transition: color 300ms ease;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  transition: all 200ms ease;
 }
 
 .chart-toggle-checkbox:checked + .chart-toggle-text {
   color: var(--green);
+  background: var(--soft-green);
+  border-color: var(--green);
 }
 
 /* Date Picker */
@@ -2567,6 +2572,18 @@ address svg {
   }
 
   .date-picker-label {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-toggles {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .chart-toggle-label {
     width: 100%;
     justify-content: center;
   }
