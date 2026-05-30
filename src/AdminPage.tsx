@@ -369,22 +369,24 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="chart-toggles">
-            <button
-              className={`chart-toggle-btn ${showOrdersLine ? 'is-active' : ''}`}
-              onClick={() => setShowOrdersLine(!showOrdersLine)}
-              type="button"
-            >
-              <span className="toggle-dot" style={{ background: 'var(--green)' }}></span>
-              Замовлення
-            </button>
-            <button
-              className={`chart-toggle-btn ${showCalcsLine ? 'is-active' : ''}`}
-              onClick={() => setShowCalcsLine(!showCalcsLine)}
-              type="button"
-            >
-              <span className="toggle-dot" style={{ background: '#68766a' }}></span>
-              Калькулятор
-            </button>
+            <label className="chart-toggle-label">
+              <input
+                type="checkbox"
+                checked={showOrdersLine}
+                onChange={() => setShowOrdersLine(!showOrdersLine)}
+                className="chart-toggle-checkbox"
+              />
+              <span className="chart-toggle-text">Замовлення</span>
+            </label>
+            <label className="chart-toggle-label">
+              <input
+                type="checkbox"
+                checked={showCalcsLine}
+                onChange={() => setShowCalcsLine(!showCalcsLine)}
+                className="chart-toggle-checkbox"
+              />
+              <span className="chart-toggle-text">Калькулятор</span>
+            </label>
           </div>
         </div>
 
