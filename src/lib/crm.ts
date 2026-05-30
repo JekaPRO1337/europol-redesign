@@ -168,3 +168,15 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   const { error } = await supabase.from('orders').update({ status }).eq('id', orderId)
   if (error) throw error
 }
+
+export async function deleteOrder(orderId: string) {
+  assertConfigured()
+  const { error } = await supabase.from('orders').delete().eq('id', orderId)
+  if (error) throw error
+}
+
+export async function deleteCalculatorRequest(requestId: string) {
+  assertConfigured()
+  const { error } = await supabase.from('calculator_requests').delete().eq('id', requestId)
+  if (error) throw error
+}

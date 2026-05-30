@@ -9,11 +9,14 @@ import {
   RefreshCcw,
   Search,
   ShieldCheck,
+  Trash2,
 } from 'lucide-react'
 import {
   fetchCalculatorRequests,
   fetchOrders,
   updateOrderStatus,
+  deleteOrder,
+  deleteCalculatorRequest,
   type CalculatorRequestRecord,
   type OrderRecord,
   type OrderStatus,
@@ -52,14 +55,104 @@ export default function AdminPage() {
   const [selectedOrder, setSelectedOrder] = useState<OrderRecord | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [period, setPeriod] = useState<'7_days' | '30_days' | '90_days' | 'all'>('30_days')
+  const [hoveredDay, setHoveredDay] = useState<any | null>(null)
+
+  const periodThresholdDate = useMemo(() => {
+    if (period === 'all') return null
+    const now = new Date()
+    const days = period === '7_days' ? 7 : period === '30_days' ? 30 : 90
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate() - days, 0, 0, 0)
+  }, [period])
+
+  const filteredOrders = useMemo(() => {
+    if (!periodThresholdDate) return orders
+    return orders.filter((o) => new Date(o.created_at) >= periodThresholdDate)
+  }, [orders, periodThresholdDate])
+
+  const filteredCalculatorRequests = useMemo(() => {
+    if (!periodThresholdDate) return calculatorRequests
+    return calculatorRequests.filter((c) => new Date(c.created_at) >= periodThresholdDate)
+  }, [calculatorRequests, periodThresholdDate])
 
   const stats = useMemo(() => {
-    const newOrders = orders.filter((order) => order.status === 'new').length
-    const completed = orders.filter((order) => order.status === 'completed').length
-    const total = orders.reduce((sum, order) => sum + Number(order.total_price || 0), 0)
+    const newOrders = filteredOrders.filter((order) => order.status === 'new').length
+    const completed = filteredOrders.filter((order) => order.status === 'completed').length
+    const total = filteredOrders.reduce((sum, order) => sum + Number(order.total_price || 0), 0)
 
     return { newOrders, completed, total }
-  }, [orders])
+  }, [filteredOrders])
+
+  const chartData = useMemo(() => {
+    const now = new Date()
+    const numDays = period === '7_days' ? 7 : period === '30_days' ? 30 : period === '90_days' ? 90 : 30
+    const result: { dateStr: string; label: string; orders: number; calcs: number; revenue: number }[] = []
+
+    for (let i = numDays - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i)
+      const dateStr = d.toISOString().split('T')[0]
+      const label = d.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })
+      result.push({ dateStr, label, orders: 0, calcs: 0, revenue: 0 })
+    }
+
+    orders.forEach((o) => {
+      const dStr = o.created_at.split('T')[0]
+      const match = result.find((item) => item.dateStr === dStr)
+      if (match) {
+        match.orders++
+        match.revenue += Number(o.total_price || 0)
+      }
+    })
+
+    calculatorRequests.forEach((c) => {
+      const dStr = c.created_at.split('T')[0]
+      const match = result.find((item) => item.dateStr === dStr)
+      if (match) {
+        match.calcs++
+      }
+    })
+
+    return result
+  }, [orders, calculatorRequests, period])
+
+  const maxVal = useMemo(() => {
+    const val = Math.max(...chartData.map((d) => Math.max(d.orders, d.calcs)), 5)
+    return val
+  }, [chartData])
+
+  const width = 800
+  const height = 240
+  const paddingX = 40
+  const paddingY = 30
+
+  const getX = (index: number) => {
+    if (chartData.length <= 1) return width / 2
+    return paddingX + (index / (chartData.length - 1)) * (width - 2 * paddingX)
+  }
+
+  const getY = (value: number) => {
+    return height - paddingY - (value / maxVal) * (height - 2 * paddingY)
+  }
+
+  const ordersLinePath = useMemo(() => {
+    if (chartData.length === 0) return ''
+    return chartData.map((d, idx) => `${idx === 0 ? 'M' : 'L'} ${getX(idx)} ${getY(d.orders)}`).join(' ')
+  }, [chartData, maxVal])
+
+  const ordersAreaPath = useMemo(() => {
+    if (chartData.length === 0 || !ordersLinePath) return ''
+    return `${ordersLinePath} L ${getX(chartData.length - 1)} ${height - paddingY} L ${getX(0)} ${height - paddingY} Z`
+  }, [chartData, ordersLinePath])
+
+  const calcsLinePath = useMemo(() => {
+    if (chartData.length === 0) return ''
+    return chartData.map((d, idx) => `${idx === 0 ? 'M' : 'L'} ${getX(idx)} ${getY(d.calcs)}`).join(' ')
+  }, [chartData, maxVal])
+
+  const calcsAreaPath = useMemo(() => {
+    if (chartData.length === 0 || !calcsLinePath) return ''
+    return `${calcsLinePath} L ${getX(chartData.length - 1)} ${height - paddingY} L ${getX(0)} ${height - paddingY} Z`
+  }, [chartData, calcsLinePath])
 
   const loadData = async () => {
     setIsLoading(true)
@@ -127,6 +220,28 @@ export default function AdminPage() {
     }
   }
 
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!window.confirm('Ви впевнені, що хочете видалити це замовлення?')) return
+    setErrorMessage(null)
+    try {
+      await deleteOrder(orderId)
+      await loadData()
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Не вдалося видалити замовлення.')
+    }
+  }
+
+  const handleDeleteCalculatorRequest = async (requestId: string) => {
+    if (!window.confirm('Ви впевнені, що хочете видалити цей запит?')) return
+    setErrorMessage(null)
+    try {
+      await deleteCalculatorRequest(requestId)
+      await loadData()
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Не вдалося видалити запит.')
+    }
+  }
+
   if (!isSupabaseConfigured) {
     return (
       <main className="admin-shell">
@@ -190,6 +305,19 @@ export default function AdminPage() {
           <h1>Заявки Європол</h1>
         </div>
         <div className="admin-actions">
+          <label className="select-field" style={{ margin: 0 }}>
+            <select 
+              value={period} 
+              onChange={(e) => setPeriod(e.target.value as any)} 
+              style={{ minHeight: '38px', background: '#fff', fontSize: '13px', border: '1px solid var(--line)', borderRadius: '8px', padding: '0 10px', fontWeight: 800 }}
+              aria-label="Період аналітики"
+            >
+              <option value="7_days">Останні 7 днів</option>
+              <option value="30_days">Останні 30 днів</option>
+              <option value="90_days">Останні 90 днів</option>
+              <option value="all">За весь час</option>
+            </select>
+          </label>
           <a className="button secondary" href="/">
             На сайт
           </a>
@@ -219,8 +347,159 @@ export default function AdminPage() {
         <article>
           <Calculator size={24} />
           <span>Калькулятор</span>
-          <strong>{calculatorRequests.length}</strong>
+          <strong>{filteredCalculatorRequests.length}</strong>
         </article>
+      </section>
+
+      {/* Analytics Chart Section */}
+      <section className="admin-panel" style={{ padding: '20px', marginBottom: '22px', minHeight: 'auto', background: 'rgba(255, 255, 255, 0.9)', border: '1px solid var(--line)', borderRadius: '12px' }}>
+        <div className="admin-panel-head" style={{ border: 'none', padding: '0 0 16px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <h2 style={{ fontSize: '18px', fontWeight: 850, margin: 0 }}>Аналітика за період</h2>
+            <p style={{ fontSize: '12px', color: 'var(--muted)', margin: '4px 0 0' }}>
+              Активність замовлень та запитів калькулятора по днях
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center', fontSize: '13px', fontWeight: 750 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }}></span>
+              Замовлення
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#68766a', display: 'inline-block' }}></span>
+              Калькулятор
+            </span>
+          </div>
+        </div>
+
+        {chartData.length === 0 ? (
+          <p className="admin-empty" style={{ minHeight: '160px' }}>Немає даних за цей період.</p>
+        ) : (
+          <div style={{ position: 'relative', background: '#fcfdfb', borderRadius: '8px', padding: '16px 12px 8px 12px', border: '1px solid var(--line)' }}>
+            <svg viewBox="0 0 800 240" width="100%" height="240" style={{ overflow: 'visible', display: 'block' }}>
+              <defs>
+                <linearGradient id="orders-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--green)" stopOpacity="0.20" />
+                  <stop offset="100%" stopColor="var(--green)" stopOpacity="0.00" />
+                </linearGradient>
+                <linearGradient id="calcs-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#68766a" stopOpacity="0.10" />
+                  <stop offset="100%" stopColor="#68766a" stopOpacity="0.00" />
+                </linearGradient>
+              </defs>
+
+              {/* Horizontal Grid lines */}
+              {[0, 0.25, 0.5, 0.75, 1].map((ratio, idx) => {
+                const y = paddingY + ratio * (height - 2 * paddingY)
+                const gridVal = Math.round(maxVal - ratio * maxVal)
+                return (
+                  <g key={idx}>
+                    <line x1={paddingX} y1={y} x2={width - paddingX} y2={y} stroke="var(--line)" strokeDasharray="3 3" />
+                    <text x={paddingX - 10} y={y + 4} textAnchor="end" fill="var(--muted)" fontSize="10" fontWeight="700">{gridVal}</text>
+                  </g>
+                )
+              })}
+
+              {/* Day Hover Overlay triggers */}
+              {chartData.map((day, idx) => {
+                const x = getX(idx)
+                const colWidth = (width - 2 * paddingX) / chartData.length
+                return (
+                  <rect
+                    key={idx}
+                    x={x - colWidth / 2}
+                    y={paddingY}
+                    width={colWidth}
+                    height={height - 2 * paddingY}
+                    fill="transparent"
+                    style={{ cursor: 'pointer' }}
+                    onMouseEnter={() => setHoveredDay({ ...day, idx })}
+                    onMouseLeave={() => setHoveredDay(null)}
+                  />
+                )
+              })}
+
+              {/* Fill Gradient under lines */}
+              {ordersAreaPath && <path d={ordersAreaPath} fill="url(#orders-grad)" pointerEvents="none" />}
+              {calcsAreaPath && <path d={calcsAreaPath} fill="url(#calcs-grad)" pointerEvents="none" />}
+
+              {/* Line Paths */}
+              {ordersLinePath && (
+                <path d={ordersLinePath} fill="none" stroke="var(--green)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />
+              )}
+              {calcsLinePath && (
+                <path d={calcsLinePath} fill="none" stroke="#68766a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />
+              )}
+
+              {/* Circles on Nodes */}
+              {chartData.length <= 30 && chartData.map((day, idx) => {
+                const x = getX(idx)
+                return (
+                  <g key={idx} pointerEvents="none">
+                    {day.orders > 0 && <circle cx={x} cy={getY(day.orders)} r="4" fill="var(--green)" stroke="#fff" strokeWidth="1.5" />}
+                    {day.calcs > 0 && <circle cx={x} cy={getY(day.calcs)} r="4" fill="#68766a" stroke="#fff" strokeWidth="1.5" />}
+                  </g>
+                )
+              })}
+
+              {/* vertical tooltip line */}
+              {hoveredDay && (
+                <line
+                  x1={getX(hoveredDay.idx)}
+                  y1={paddingY}
+                  x2={getX(hoveredDay.idx)}
+                  y2={height - paddingY}
+                  stroke="var(--green)"
+                  strokeWidth="1.5"
+                  strokeDasharray="2 2"
+                  pointerEvents="none"
+                />
+              )}
+
+              {/* X Axis Labels */}
+              {chartData.map((day, idx) => {
+                const interval = chartData.length > 30 ? 10 : chartData.length > 7 ? 5 : 1
+                if (idx % interval !== 0 && idx !== chartData.length - 1) return null
+                const x = getX(idx)
+                return (
+                  <text key={idx} x={x} y={height - paddingY + 18} textAnchor="middle" fill="var(--muted)" fontSize="9" fontWeight="700">
+                    {day.label}
+                  </text>
+                )
+              })}
+            </svg>
+
+            {/* Hover details overlay */}
+            {hoveredDay && (
+              <div style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: 'rgba(255, 255, 255, 0.95)',
+                border: '1px solid var(--line)',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+                zIndex: 10,
+                fontSize: '12px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                minWidth: '180px'
+              }}>
+                <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>{hoveredDay.label}</strong>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                  <span style={{ color: 'var(--muted)' }}>Замовлень:</span>
+                  <span style={{ fontWeight: 800, color: 'var(--green-dark)' }}>{hoveredDay.orders} ({formatMoney(hoveredDay.revenue)})</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px' }}>
+                  <span style={{ color: 'var(--muted)' }}>Запитів:</span>
+                  <span style={{ fontWeight: 800, color: '#68766a' }}>{hoveredDay.calcs}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </section>
 
       <section className="admin-filters">
@@ -257,11 +536,11 @@ export default function AdminPage() {
         <div className="admin-panel">
           <div className="admin-panel-head">
             <h2>Замовлення</h2>
-            <span>{orders.length}</span>
+            <span>{filteredOrders.length}</span>
           </div>
 
           <div className="admin-table-wrap">
-            {orders.length === 0 ? (
+            {filteredOrders.length === 0 ? (
               <p className="admin-empty">Заявок поки немає.</p>
             ) : (
               <table className="admin-table">
@@ -276,7 +555,7 @@ export default function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((order) => (
+                  {filteredOrders.map((order) => (
                     <tr
                       className={selectedOrder?.id === order.id ? 'is-selected' : ''}
                       key={order.id}
@@ -356,6 +635,17 @@ export default function AdminPage() {
                   ))}
                 </tbody>
               </table>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '14px', borderTop: '1px solid var(--line)', paddingTop: '14px' }}>
+                <button
+                  className="button secondary"
+                  style={{ borderColor: 'var(--red)', color: 'var(--red)', background: 'transparent', gap: '6px' }}
+                  onClick={() => handleDeleteOrder(selectedOrder.id)}
+                  type="button"
+                >
+                  <Trash2 size={16} />
+                  <span>Видалити замовлення</span>
+                </button>
+              </div>
             </div>
           ) : (
             <p className="admin-empty">Обери заявку для перегляду товарів.</p>
@@ -367,10 +657,10 @@ export default function AdminPage() {
       <section className="admin-panel">
         <div className="admin-panel-head">
           <h2>Запити калькулятора</h2>
-          <span>{calculatorRequests.length}</span>
+          <span>{filteredCalculatorRequests.length}</span>
         </div>
         <div className="admin-table-wrap">
-          {calculatorRequests.length === 0 ? (
+          {filteredCalculatorRequests.length === 0 ? (
             <p className="admin-empty">Запитів калькулятора поки немає.</p>
           ) : (
             <table className="admin-table">
@@ -381,10 +671,11 @@ export default function AdminPage() {
                   <th>Сума</th>
                   <th>Коментар</th>
                   <th>Товари</th>
+                  <th>Дія</th>
                 </tr>
               </thead>
               <tbody>
-                {calculatorRequests.map((request) => (
+                {filteredCalculatorRequests.map((request) => (
                   <tr key={request.id}>
                     <td>{formatDate(request.created_at)}</td>
                     <td>
@@ -409,6 +700,17 @@ export default function AdminPage() {
                         </ul>
                       </details>
                     </td>
+                    <td>
+                      <button
+                        className="button secondary"
+                        style={{ padding: '6px 8px', minHeight: 'auto', borderColor: 'var(--red)', color: 'var(--red)', background: 'transparent' }}
+                        onClick={() => handleDeleteCalculatorRequest(request.id)}
+                        type="button"
+                        title="Видалити запит"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -419,3 +721,4 @@ export default function AdminPage() {
     </main>
   )
 }
+

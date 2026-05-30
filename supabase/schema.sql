@@ -120,3 +120,17 @@ on public.admin_users
 for select
 to authenticated
 using (public.is_admin() or user_id = auth.uid());
+
+drop policy if exists "Admins can delete orders" on public.orders;
+create policy "Admins can delete orders"
+on public.orders
+for delete
+to authenticated
+using (public.is_admin());
+
+drop policy if exists "Admins can delete calculator requests" on public.calculator_requests;
+create policy "Admins can delete calculator requests"
+on public.calculator_requests
+for delete
+to authenticated
+using (public.is_admin());
