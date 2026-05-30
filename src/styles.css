@@ -2360,9 +2360,16 @@ address svg {
     padding: 16px;
   }
 
-  .admin-topbar,
+  .admin-topbar {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
   .admin-actions {
-    display: grid;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
   }
 
   .admin-stats,
@@ -2449,10 +2456,10 @@ address svg {
 .chart-toggle-label {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
   user-select: none;
-  padding: 8px 16px;
+  padding: 10px 18px;
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -2504,12 +2511,8 @@ address svg {
   transition: color 200ms ease;
 }
 
-.chart-toggle-checkbox:checked + .chart-toggle-slider + .chart-toggle-text {
+.chart-toggle-checkbox:checked + .chart-toggle-text {
   color: var(--green);
-}
-
-.chart-toggle-slider {
-  display: none;
 }
 
 @media (max-width: 760px) {
