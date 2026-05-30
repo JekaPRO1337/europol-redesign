@@ -316,23 +316,23 @@ export default function AdminPage() {
           <h1>Заявки Європол</h1>
         </div>
         <div className="admin-actions">
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700 }}>
+          <div className="date-picker-container">
+            <label className="date-picker-label">
               Від:
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                style={{ padding: '6px 8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, minHeight: '32px' }}
+                className="date-picker-input"
               />
             </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700 }}>
+            <label className="date-picker-label">
               До:
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                style={{ padding: '6px 8px', border: '1px solid var(--line)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, minHeight: '32px' }}
+                className="date-picker-input"
               />
             </label>
           </div>

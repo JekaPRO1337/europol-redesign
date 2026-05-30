@@ -2378,6 +2378,10 @@ address svg {
   .admin-calc-grid {
     grid-template-columns: 1fr;
   }
+
+  .admin-shell svg[viewBox="0 0 800 240"] {
+    height: 320px !important;
+  }
 }
 
 /* Admin Tab Buttons */
@@ -2456,10 +2460,10 @@ address svg {
 .chart-toggle-label {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   cursor: pointer;
   user-select: none;
-  padding: 10px 18px;
+  padding: 12px 20px;
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -2515,6 +2519,37 @@ address svg {
   color: var(--green);
 }
 
+/* Date Picker */
+.date-picker-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.date-picker-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.date-picker-input {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 32px;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.date-picker-input:hover {
+  border-color: var(--green);
+}
+
 @media (max-width: 760px) {
   .chart-toggles {
     flex-direction: column;
@@ -2522,6 +2557,16 @@ address svg {
   }
 
   .chart-toggle-label {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .date-picker-container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .date-picker-label {
     width: 100%;
     justify-content: center;
   }
