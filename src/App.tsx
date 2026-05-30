@@ -24,6 +24,12 @@ import {
 } from 'lucide-react'
 import { catalogMeta, collections, products } from './data/catalog'
 import type { Product, ProductCategory } from './data/catalog'
+import {
+  createCalculatorRequest,
+  createOrder,
+  type CalculatorProductPayload,
+  type CrmOrderItemInput,
+} from './lib/crm'
 
 type CategoryFilter = 'Усі' | ProductCategory
 type SortMode = 'popular' | 'price-asc' | 'price-desc'
@@ -52,6 +58,13 @@ const email = 'evropol2009@ukr.net'
 const currency = new Intl.NumberFormat('uk-UA')
 const formatPrice = (price: number) => `${currency.format(price)} грн/м²`
 const formatTotal = (price: number) => `${currency.format(price)} грн`
+
+const paymentMethodLabels: Record<string, string> = {
+  callback: 'Уточнити з менеджером',
+  cash_pickup: 'Оплата при самовивозі',
+  cash_delivery: 'Оплата при доставці',
+  invoice: 'Рахунок для ФОП/компанії',
+}
 
 const titleFixes: Record<string, string> = {
   'Актіва Элиот 6': 'Актіва Еліот 6',
@@ -283,12 +296,14 @@ function App() {
   const [rooms, setRooms] = useState<RoomItem[]>([
     { id: '1', productName: '', productId: '', width: 3, length: 5 },
   ])
-  const [calcPhone, setCalcPhone] = useState('')
+  const [calcPhone, setCalcPhone] = useState('380')
 
   // Checkout Client Form State
   const [clientName, setClientName] = useState('')
   const [clientPhone, setClientPhone] = useState('380')
-
+  const [orderComment, setOrderComment] = useState('')
+  const [needsCallback, setNeedsCallback] = useState(true)
+  const [paymentMethod, setPaymentMethod] = useState('callback')
   const [deliveryMethod, setDeliveryMethod] = useState('Самовивіз з пр-т Свободи, 85 (0 грн)')
 
   // Featured carousel
@@ -297,6 +312,8 @@ function App() {
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [successOrderDetails, setSuccessOrderDetails] = useState<string | null>(null)
+  const [isSavingOrder, setIsSavingOrder] = useState(false)
+  const [isSavingCalculator, setIsSavingCalculator] = useState(false)
   
 
 
@@ -448,11 +465,31 @@ function App() {
     }, 0)
   }, [rooms])
 
-  // Viber Export for Room Calculator
-  const handleCalcViberExport = (e: React.FormEvent) => {
+  // CRM lead save + Viber export for room calculator.
+  const handleCalcViberExport = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // Construct Viber text
+
+    const cleanPhone = calcPhone.replace(/\D/g, '')
+    if (cleanPhone.length < 12) {
+      showToast('Будь ласка, введіть повний номер телефону (9 цифр після 380)!')
+      return
+    }
+
+    const selectedProducts: CalculatorProductPayload[] = rooms.map((room, idx) => {
+      const product = products.find((p) => p.id === room.productId)
+      const area = room.width * room.length
+
+      return {
+        room: `Кімната ${idx + 1}`,
+        product_id: product?.id ?? '',
+        product_name: product ? cleanTitle(product.title) : room.productName || 'Покриття не обрано',
+        product_price: product?.price ?? 0,
+        area,
+        width: room.width,
+        length: room.length,
+      }
+    })
+
     let message = `📐 Запит на прорахунок кімнат:\n\n`
     if (calcPhone) {
       message += `📞 Контактний телефон: ${calcPhone}\n\n`
@@ -483,10 +520,25 @@ function App() {
     }
     message += `\nБудь ласка, уточніть наявність цих розмірів на складі Європол.`
 
-    // Copy to clipboard
+    setIsSavingCalculator(true)
+
+    try {
+      await createCalculatorRequest({
+        selected_products: selectedProducts,
+        calculated_price: calcTotalPrice,
+        phone: calcPhone.trim(),
+        comment: `Загальна площа: ${calcTotalArea.toFixed(1)} м². ${calcTotalPrice > 0 ? `Попередня сума: ${formatTotal(calcTotalPrice)}.` : 'Сума не розрахована.'}`,
+      })
+    } catch (error) {
+      console.error(error)
+      showToast('Не вдалося зберегти запит у CRM. Перевір Supabase/RLS.')
+      setIsSavingCalculator(false)
+      return
+    }
+
     navigator.clipboard.writeText(message)
       .then(() => {
-        showToast('Прорахунок скопійовано! Відкриваємо Viber...')
+        showToast('Прорахунок збережено в CRM! Відкриваємо Viber...')
         setSuccessOrderDetails(message)
         // Delay opening to let state updates settle
         setTimeout(() => {
@@ -497,6 +549,7 @@ function App() {
         console.error('Failed to copy', err)
         showToast('Помилка копіювання. Спробуйте ще раз.')
       })
+      .finally(() => setIsSavingCalculator(false))
   }
 
   // Cart Totals
@@ -519,11 +572,20 @@ function App() {
 
   const grandTotal = cartTotalPrice + deliveryCost
 
-  // Cart Form Order Submit (Viber Link + Copy message)
-  const handleCartSubmit = (e: React.FormEvent) => {
+  // Cart form submit: save to CRM first, then copy/open Viber as an extra convenience channel.
+  const handleCartSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!clientPhone.trim()) {
-      showToast('Введіть ваш контактний номер телефону!')
+    if (!clientName.trim()) {
+      showToast("Будь ласка, введіть ваше ім'я!")
+      return
+    }
+    const cleanPhone = clientPhone.replace(/\D/g, '')
+    if (cleanPhone.length < 12) {
+      showToast('Будь ласка, введіть повний номер телефону (9 цифр після 380)!')
+      return
+    }
+    if (cart.length === 0) {
+      showToast('Кошик порожній.')
       return
     }
 
@@ -531,6 +593,11 @@ function App() {
     message += `👤 Клієнт: ${clientName || 'Не вказано'}\n`
     message += `📞 Телефон: ${clientPhone}\n`
     message += `🚚 Доставка: ${deliveryMethod}\n\n`
+    message += `💳 Оплата: ${paymentMethodLabels[paymentMethod]}\n`
+    if (orderComment.trim()) {
+      message += `💬 Коментар: ${orderComment.trim()}\n`
+    }
+    message += `\n`
     message += `📦 Обрані товари:\n`
 
     cart.forEach((item, idx) => {
@@ -550,11 +617,59 @@ function App() {
     message += `💰 Разом до сплати: ${formatTotal(grandTotal)}\n\n`
     message += `Надіслано з сайту Європол.`
 
+    const orderItems: CrmOrderItemInput[] = cart.map((item) => {
+      const area = item.width * item.length
+
+      return {
+        product_name: cleanTitle(item.product.title),
+        product_price: item.product.price,
+        area,
+        width: item.width,
+        length: item.length,
+        quantity: 1,
+      }
+    })
+
+    setIsSavingOrder(true)
+
+    try {
+      const orderId = await createOrder({
+        customer_name: clientName.trim() || 'Не вказано',
+        phone: clientPhone.trim(),
+        comment: [
+          orderComment.trim(),
+          `Доставка: ${deliveryMethod}`,
+          `Площа: ${cartTotalArea.toFixed(1)} м²`,
+          `Орієнтовна вага: ${cartTotalWeight.toFixed(1)} кг`,
+        ]
+          .filter(Boolean)
+          .join('\n'),
+        total_price: grandTotal,
+        source: 'cart',
+        payment_method: paymentMethod,
+        needs_callback: needsCallback,
+        items: orderItems,
+      })
+
+      message = `ID заявки в CRM: ${orderId}\n\n${message}`
+      setCart([])
+      setClientName('')
+      setClientPhone('380')
+      setOrderComment('')
+      setNeedsCallback(true)
+      setPaymentMethod('callback')
+      setIsCartOpen(false)
+    } catch (error) {
+      console.error(error)
+      showToast('Не вдалося зберегти замовлення в CRM. Перевір Supabase/RLS.')
+      setIsSavingOrder(false)
+      return
+    }
+
     navigator.clipboard.writeText(message)
       .then(() => {
-        showToast('Замовлення скопійовано! Відкриваємо Viber...')
+        showToast('Заявку збережено в CRM! Відкриваємо Viber...')
         setSuccessOrderDetails(message)
-        setIsCartOpen(false)
         setTimeout(() => {
           window.open(`viber://chat?number=%2B380503089909`, '_blank')
         }, 800)
@@ -563,34 +678,12 @@ function App() {
         console.error('Failed to copy', err)
         showToast('Помилка копіювання.')
       })
+      .finally(() => setIsSavingOrder(false))
   }
 
-  // Dummy Payment Click handler
+  // Payment providers are intentionally not connected yet. This keeps the future UI path visible.
   const handleDummyPayment = (paymentType: string) => {
-    if (cart.length === 0) return
-    
-    let message = `💳 Оплата замовлення через ${paymentType}:\n\n`
-    message += `👤 Покупець: ${clientName || 'Швидкий покупець'}\n`
-    message += `📞 Телефон: ${clientPhone || 'Не вказано'}\n`
-    message += `🚚 Доставка: ${deliveryMethod}\n\n`
-    message += `📦 Склад замовлення:\n`
-    
-    cart.forEach((item, idx) => {
-      const area = item.width * item.length
-      message += `${idx + 1}. ${cleanTitle(item.product.title)} - ${item.width}м x ${item.length}м (${area.toFixed(1)} м²)\n`
-    })
-    
-    message += `\n💰 Сума: ${formatTotal(grandTotal)}\n`
-    message += `Статус транзакції: [СИМУЛЯЦІЯ УСПІШНОЇ ОПЛАТИ]\n`
-    message += `Менеджер зв'яжеться для відвантаження.`
-
-    navigator.clipboard.writeText(message)
-      .then(() => {
-        showToast(`Оплату через ${paymentType} імітовано! Деталі скопійовано.`)
-        setSuccessOrderDetails(message)
-        setIsCartOpen(false)
-        setCart([])
-      })
+    showToast(`${paymentType} підготовлено в архітектурі, але оплату ще не підключено.`)
   }
 
   return (
@@ -863,6 +956,7 @@ function App() {
                     className="checkout-input" 
                     type="text" 
                     placeholder="Ваше ім'я" 
+                    required
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                   />
@@ -873,10 +967,8 @@ function App() {
                     required 
                     value={clientPhone}
                     onChange={(e) => {
-                      const val = e.target.value
-                      if (val.startsWith('380') || val.length < 3) {
-                        setClientPhone(val.length < 3 ? '380' : val)
-                      }
+                      const val = e.target.value.replace(/\D/g, '')
+                      setClientPhone(val.length < 3 ? '380' : val)
                     }}
                   />
                   <select 
@@ -891,26 +983,56 @@ function App() {
                     <option value="Делівері / САТ по Україні (за тарифами)">Делівері / САТ - за тарифами</option>
                   </select>
 
+                  <select
+                    className="checkout-select"
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    aria-label="Оберіть спосіб оплати"
+                  >
+                    <option value="callback">Уточнити оплату з менеджером</option>
+                    <option value="cash_pickup">Оплата при самовивозі</option>
+                    <option value="cash_delivery">Оплата при доставці</option>
+                    <option value="invoice">Рахунок для ФОП/компанії</option>
+                  </select>
+
+                  <textarea
+                    className="checkout-input"
+                    placeholder="Коментар до замовлення"
+                    value={orderComment}
+                    onChange={(e) => setOrderComment(e.target.value)}
+                    style={{ minHeight: '72px', paddingTop: '10px', resize: 'vertical' }}
+                  />
+
+                  <label style={{ display: 'flex', gap: '8px', alignItems: 'center', fontSize: '12px', fontWeight: '800', color: 'var(--muted)' }}>
+                    <input
+                      checked={needsCallback}
+                      onChange={(e) => setNeedsCallback(e.target.checked)}
+                      type="checkbox"
+                      style={{ accentColor: 'var(--green)' }}
+                    />
+                    Потрібен дзвінок менеджера
+                  </label>
+
                   <div style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: '600', padding: '0 4px' }}>
                     * Орієнтовна вага вашого лінолеуму: <strong>{cartTotalWeight.toFixed(1)} кг</strong>
                   </div>
 
-                  <button className="button primary full" type="submit" style={{ marginTop: '4px' }}>
+                  <button className="button primary full" disabled={isSavingOrder} type="submit" style={{ marginTop: '4px' }}>
                     <ShoppingCart size={18} />
-                    <span>Уточнити наявність у Viber</span>
+                    <span>{isSavingOrder ? 'Зберігаємо заявку...' : 'Зберегти заявку і відправити у Viber'}</span>
                   </button>
                 </form>
 
                 <div>
-                  <div className="express-pay-title">Швидка симуляція оплати</div>
+                  <div className="express-pay-title">Майбутні онлайн-оплати</div>
                   <div className="express-pay-grid">
-                    <button className="express-btn apple-pay" onClick={() => handleDummyPayment('Apple Pay')}>
+                    <button className="express-btn apple-pay" type="button" onClick={() => handleDummyPayment('Apple Pay')}>
                       <span>Apple Pay</span>
                     </button>
-                    <button className="express-btn google-pay" onClick={() => handleDummyPayment('Google Pay')}>
+                    <button className="express-btn google-pay" type="button" onClick={() => handleDummyPayment('Google Pay')}>
                       <span>Google Pay</span>
                     </button>
-                    <button className="express-btn monobank" onClick={() => handleDummyPayment('Monobank')}>
+                    <button className="express-btn monobank" type="button" onClick={() => handleDummyPayment('Monobank')}>
                       <span>Сплатити через mono</span>
                     </button>
                   </div>
@@ -1142,16 +1264,19 @@ function App() {
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                         <input 
                           type="tel" 
-                          placeholder="Ваш телефон *" 
-                          required 
+                          placeholder="380XXXXXXXXX" 
+                          required
                           value={calcPhone}
-                          onChange={(e) => setCalcPhone(e.target.value)}
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '')
+                            setCalcPhone(val.length < 3 ? '380' : val)
+                          }}
                           className="checkout-input" 
                           style={{ maxWidth: '220px', minHeight: '44px' }}
                         />
-                        <button className="calc-viber-btn" type="submit">
+                        <button className="calc-viber-btn" disabled={isSavingCalculator} type="submit">
                           <Phone size={18} />
-                          <span>Перевірити наявність у Viber</span>
+                          <span>{isSavingCalculator ? 'Зберігаємо...' : 'Зберегти і відправити у Viber'}</span>
                         </button>
                       </div>
                     </div>
