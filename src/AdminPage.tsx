@@ -368,47 +368,21 @@ export default function AdminPage() {
               Активність замовлень та запитів калькулятора по днях
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="chart-toggles">
             <button
+              className={`chart-toggle-btn ${showOrdersLine ? 'is-active' : ''}`}
               onClick={() => setShowOrdersLine(!showOrdersLine)}
               type="button"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 12px',
-                border: `1px solid ${showOrdersLine ? 'var(--green)' : 'var(--line)'}`,
-                borderRadius: '6px',
-                background: showOrdersLine ? 'var(--soft-green)' : '#fff',
-                color: showOrdersLine ? 'var(--green-dark)' : 'var(--muted)',
-                fontSize: '12px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 160ms ease'
-              }}
             >
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--green)', display: 'inline-block' }}></span>
+              <span className="toggle-dot" style={{ background: 'var(--green)' }}></span>
               Замовлення
             </button>
             <button
+              className={`chart-toggle-btn ${showCalcsLine ? 'is-active' : ''}`}
               onClick={() => setShowCalcsLine(!showCalcsLine)}
               type="button"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 12px',
-                border: `1px solid ${showCalcsLine ? '#68766a' : 'var(--line)'}`,
-                borderRadius: '6px',
-                background: showCalcsLine ? '#f0f0f0' : '#fff',
-                color: showCalcsLine ? '#68766a' : 'var(--muted)',
-                fontSize: '12px',
-                fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'all 160ms ease'
-              }}
             >
-              <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#68766a', display: 'inline-block' }}></span>
+              <span className="toggle-dot" style={{ background: '#68766a' }}></span>
               Калькулятор
             </button>
           </div>
