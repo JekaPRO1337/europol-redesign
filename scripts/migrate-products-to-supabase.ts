@@ -26,11 +26,24 @@ async function migrateProducts() {
   console.log('Starting migration of products to Supabase...')
   console.log('Using service role key to bypass RLS policies...')
 
+  // Delete all existing products first
+  console.log('Deleting all existing products...')
+  const { error: deleteError } = await supabase
+    .from('products')
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000')
+
+  if (deleteError) {
+    console.error('Error deleting existing products:', deleteError)
+    process.exit(1)
+  }
+  console.log('✓ Deleted all existing products')
+
   for (const product of products) {
     try {
       const { error } = await supabase
         .from('products')
-        .upsert({
+        .insert({
           id: product.id,
           title: product.title,
           category: product.category,
@@ -40,9 +53,7 @@ async function migrateProducts() {
           specs: product.specs,
           summary: product.summary,
           source_url: product.sourceUrl,
-          available: true
-        }, {
-          onConflict: 'id'
+          available: product.available ?? true
         })
 
       if (error) {
