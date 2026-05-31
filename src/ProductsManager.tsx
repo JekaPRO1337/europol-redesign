@@ -390,7 +390,7 @@ export default function ProductsManager() {
 
                 <div style={{ marginBottom: '12px' }}>
                   <img
-                    src={`/${product.image}`}
+                    src={product.image}
                     alt={product.title}
                     style={{
                       width: '100%',
