@@ -24,7 +24,7 @@ import {
   ExternalLink,
   Info
 } from 'lucide-react'
-import { catalogMeta, collections, products } from './data/catalog'
+import { catalogMeta, products } from './data/catalog'
 import type { Product, ProductCategory } from './data/catalog'
 import {
   createCalculatorRequest,
@@ -33,6 +33,8 @@ import {
   type CrmOrderItemInput,
 } from './lib/crm'
 import { sendTelegramNotification } from './lib/notifications'
+
+import { supabase, isSupabaseConfigured } from './lib/supabase'
 
 type CategoryFilter = 'Усі' | ProductCategory
 type SortMode = 'popular' | 'price-asc' | 'price-desc'
@@ -125,18 +127,6 @@ const productFacts = (product: Product) => {
 }
 
 const uniqueById = (items: Product[]) => Array.from(new Map(items.map((item) => [item.id, item])).values())
-
-const heroProducts = uniqueById([
-  ...heroIds.map((id) => products.find((product) => product.id === id)).filter((item): item is Product => Boolean(item)),
-  ...products,
-]).slice(0, 6)
-
-const featuredProducts = uniqueById([
-  ...featuredIds
-    .map((id) => products.find((product) => product.id === id))
-    .filter((item): item is Product => Boolean(item)),
-  ...products,
-]).slice(0, 20)
 
 function useInfiniteCarousel<T>(items: T[]) {
   const ref = useRef<HTMLDivElement>(null)
@@ -309,6 +299,73 @@ function App() {
   const [paymentMethod, setPaymentMethod] = useState('callback')
   const [deliveryMethod, setDeliveryMethod] = useState('Самовивіз з пр-т Свободи, 85 (0 грн)')
 
+  // All Products — static catalog.ts merged with Supabase
+  const [allProducts, setAllProducts] = useState<Product[]>(products)
+
+  useEffect(() => {
+    const loadSupabaseProducts = async () => {
+      if (!isSupabaseConfigured) return
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+        if (error) throw error
+        if (!data || data.length === 0) return
+
+        const mappedData = data.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          category: p.category as ProductCategory,
+          collection: p.collection,
+          price: p.price,
+          image: p.image.startsWith('http')
+            ? p.image
+            : `https://jekapro1337.github.io/europol-redesign/${p.image}`,
+          specs: Array.isArray(p.specs) ? p.specs : [],
+          summary: p.summary || '',
+          sourceUrl: p.source_url || '',
+          available: p.available ?? true,
+        }))
+
+        const mergedMap = new Map(products.map((p) => [p.id, p]))
+        for (const sp of mappedData) {
+          mergedMap.set(sp.id, sp)
+        }
+        setAllProducts(Array.from(mergedMap.values()))
+      } catch (err) {
+        console.error('Failed to load products from Supabase:', err)
+      }
+    }
+    loadSupabaseProducts()
+  }, [])
+
+  const heroProducts = useMemo(
+    () =>
+      uniqueById([
+        ...heroIds
+          .map((id) => allProducts.find((product) => product.id === id))
+          .filter((item): item is Product => Boolean(item)),
+        ...allProducts,
+      ]).slice(0, 6),
+    [allProducts],
+  )
+
+  const featuredProducts = useMemo(
+    () =>
+      uniqueById([
+        ...featuredIds
+          .map((id) => allProducts.find((product) => product.id === id))
+          .filter((item): item is Product => Boolean(item)),
+        ...allProducts,
+      ]).slice(0, 20),
+    [allProducts],
+  )
+
+  const allCollections = useMemo(
+    () => [...new Set(allProducts.map((p) => p.collection))].sort(),
+    [allProducts],
+  )
+
   // Featured carousel
   const { ref: trackRef, thumbRef, trackBarRef, items: carouselItems } = useInfiniteCarousel(featuredProducts)
 
@@ -373,7 +430,7 @@ function App() {
   // Filtered and Sorted Products
   const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
-    const result = products.filter((product) => {
+    const result = allProducts.filter((product) => {
       const matchesQuery =
         normalizedQuery.length === 0 ||
         cleanTitle(product.title).toLowerCase().includes(normalizedQuery) ||
@@ -429,7 +486,7 @@ function App() {
   }
 
    const handleRoomProductSelect = (roomId: string, productId: string) => {
-     const product = products.find((p) => p.id === productId)
+     const product = allProducts.find((p) => p.id === productId)
      setRooms(
        rooms.map((room) =>
          room.id === roomId
@@ -463,7 +520,7 @@ function App() {
 
   const calcTotalPrice = useMemo(() => {
     return rooms.reduce((sum, r) => {
-      const product = products.find((p) => p.id === r.productId)
+      const product = allProducts.find((p) => p.id === r.productId)
       return sum + (product ? Math.round(r.width * r.length * product.price) : 0)
     }, 0)
   }, [rooms])
@@ -486,7 +543,7 @@ function App() {
     }
 
     const selectedProducts: CalculatorProductPayload[] = rooms.map((room, idx) => {
-      const product = products.find((p) => p.id === room.productId)
+      const product = allProducts.find((p) => p.id === room.productId)
       const area = room.width * room.length
 
       return {
@@ -506,7 +563,7 @@ function App() {
 
     rooms.forEach((room, idx) => {
       const area = room.width * room.length
-      const product = products.find((p) => p.id === room.productId)
+      const product = allProducts.find((p) => p.id === room.productId)
       const cost = product ? Math.round(area * product.price) : 0
 
       message += `${idx + 1}. Кімната ${idx + 1}: ${product ? cleanTitle(product.title) : 'Не обрано'} (${product?.category ?? ''})`
@@ -1184,7 +1241,7 @@ function App() {
                      <div className="calc-rows">
                        {rooms.map((room, idx) => {
                          const area = room.width * room.length
-                         const product = products.find((p) => p.id === room.productId)
+                         const product = allProducts.find((p) => p.id === room.productId)
                          const cost = product ? Math.round(area * product.price) : 0
 
                          return <div className="calc-row" key={room.id}>
@@ -1195,9 +1252,9 @@ function App() {
                                aria-label={`Покриття для кімнати ${idx + 1}`}
                              >
                                <option value="">Оберіть лінолеум...</option>
-                               {collections.map((collection) => (
-                                 <optgroup key={collection} label={collection}>
-                                   {products.filter((p) => p.collection === collection).map((p) => (
+{allCollections.map((collection) => (
+                                  <optgroup key={collection} label={collection}>
+                                   {allProducts.filter((p) => p.collection === collection).map((p) => (
                                      <option key={p.id} value={p.id}>
                                        {cleanTitle(p.title)} ({p.price} грн/м²)
                                      </option>
@@ -1427,7 +1484,7 @@ function App() {
                 <SlidersHorizontal size={18} aria-hidden="true" />
                 <select value={collection} onChange={(event) => setCollection(event.target.value)}>
                   <option>Усі колекції</option>
-                  {collections.map((item) => (
+                  {allCollections.map((item) => (
                     <option key={item}>{item}</option>
                   ))}
                 </select>
