@@ -83,10 +83,11 @@ export default function ProductsManager() {
         .order('title')
 
       if (error) throw error
-      // Map source_url to sourceUrl for frontend
+      // Map source_url to sourceUrl and add base path to images
       const mappedData = (data || []).map((product: any) => ({
         ...product,
-        sourceUrl: product.source_url
+        sourceUrl: product.source_url,
+        image: product.image.startsWith('http') ? product.image : `/europol-redesign/${product.image}`
       }))
       setProducts(mappedData)
     } catch (error) {
