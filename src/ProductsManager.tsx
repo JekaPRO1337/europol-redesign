@@ -198,7 +198,7 @@ export default function ProductsManager() {
             <Plus size={17} />
             <span>Додати товар</span>
           </button>
-          <a className="button secondary" href="/#/admin">
+          <a className="button secondary" href="#/admin">
             Назад до адмінки
           </a>
         </div>
