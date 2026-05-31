@@ -1,5 +1,4 @@
--- Исправление URL картинок - убираем лишние префиксы
+-- Исправление URL картинок - извлекаем только имя файла
 UPDATE products 
-SET image = 'products/' || 
-  SUBSTRING(image FROM POSITION('products/' IN image) + LENGTH('products/'))
+SET image = 'products/' || regexp_replace(image, '^.*/', '')
 WHERE image LIKE 'https://europolua.com%' OR image LIKE 'products/https://%';
