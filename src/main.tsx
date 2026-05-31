@@ -13,7 +13,7 @@ if (redirect && redirect !== location.href) {
 }
 
 const hash = window.location.hash
-const Root = hash === '#/admin' ? AdminPage : hash === '#/products' ? ProductsManager : App
+const Root = hash === '#/admin' ? AdminPage : hash === '#/admin/products' ? ProductsManager : App
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

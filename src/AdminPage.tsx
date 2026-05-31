@@ -337,7 +337,7 @@ export default function AdminPage() {
               />
             </label>
           </div>
-          <a className="button secondary" href="/#/products">
+          <a className="button secondary" href="/#/admin/products">
             <Package size={17} />
             <span>Товари</span>
           </a>
