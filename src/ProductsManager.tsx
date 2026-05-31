@@ -83,7 +83,12 @@ export default function ProductsManager() {
         .order('title')
 
       if (error) throw error
-      setProducts(data || [])
+      // Map source_url to sourceUrl for frontend
+      const mappedData = (data || []).map((product: any) => ({
+        ...product,
+        sourceUrl: product.source_url
+      }))
+      setProducts(mappedData)
     } catch (error) {
       console.error('Error loading products:', error)
       setErrorMessage('Не вдалося завантажити товари')
@@ -94,17 +99,23 @@ export default function ProductsManager() {
 
   const handleSave = async () => {
     try {
+      const dataToSave = {
+        ...formData,
+        source_url: formData.sourceUrl
+      }
+      delete dataToSave.sourceUrl
+
       if (editingProduct) {
         const { error } = await supabase
           .from('products')
-          .update(formData)
+          .update(dataToSave)
           .eq('id', editingProduct.id)
         if (error) throw error
       } else {
         const { error } = await supabase
           .from('products')
           .insert([{
-            ...formData,
+            ...dataToSave,
             id: formData.title.toLowerCase().replace(/\s+/g, '-')
           }])
         if (error) throw error
