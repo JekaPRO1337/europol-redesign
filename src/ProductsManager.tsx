@@ -99,23 +99,23 @@ export default function ProductsManager() {
 
   const handleSave = async () => {
     try {
-      const dataToSave = {
-        ...formData,
-        source_url: formData.sourceUrl
+      const { sourceUrl, ...dataToSave } = formData
+      const finalData = {
+        ...dataToSave,
+        source_url: sourceUrl
       }
-      delete dataToSave.sourceUrl
 
       if (editingProduct) {
         const { error } = await supabase
           .from('products')
-          .update(dataToSave)
+          .update(finalData)
           .eq('id', editingProduct.id)
         if (error) throw error
       } else {
         const { error } = await supabase
           .from('products')
           .insert([{
-            ...dataToSave,
+            ...finalData,
             id: formData.title.toLowerCase().replace(/\s+/g, '-')
           }])
         if (error) throw error
