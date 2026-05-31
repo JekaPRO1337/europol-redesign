@@ -7,17 +7,24 @@ import { resolve } from 'path'
 dotenv.config({ path: resolve(process.cwd(), '.env.local') })
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL
-const supabaseKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY
+const supabaseServiceKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY
 
-if (!supabaseUrl || !supabaseKey) {
-  console.error('VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY must be set in .env.local')
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('VITE_SUPABASE_URL and VITE_SUPABASE_SERVICE_ROLE_KEY must be set in .env.local')
+  console.error('Get SERVICE_ROLE_KEY from Supabase Dashboard → Project Settings → API')
   process.exit(1)
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
 
 async function migrateProducts() {
   console.log('Starting migration of products to Supabase...')
+  console.log('Using service role key to bypass RLS policies...')
 
   for (const product of products) {
     try {

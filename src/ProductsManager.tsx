@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
-import { Package, Plus, Edit, Trash2, Search, X, Check, AlertCircle } from 'lucide-react'
+import { Package, Edit, Trash2, Search, X, Check, AlertCircle, LogOut, ShieldCheck } from 'lucide-react'
 import type { Product, ProductCategory } from './data/catalog'
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { isSupabaseConfigured, supabase } from './lib/supabase'
 
 type ProductFormData = {
   id?: string
@@ -21,6 +17,10 @@ type ProductFormData = {
 }
 
 export default function ProductsManager() {
+  const [isReady, setIsReady] = useState(false)
+  const [isAuthed, setIsAuthed] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -41,8 +41,39 @@ export default function ProductsManager() {
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    loadProducts()
+    if (!isSupabaseConfigured) {
+      setIsReady(true)
+      return
+    }
+
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setIsAuthed(true)
+        loadProducts()
+      }
+      setIsReady(true)
+    }
+
+    checkAuth()
   }, [])
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      setErrorMessage(error.message)
+    } else {
+      setIsAuthed(true)
+      loadProducts()
+    }
+  }
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    setIsAuthed(false)
+    window.location.hash = '#/admin'
+  }
 
   const loadProducts = async () => {
     try {
@@ -175,12 +206,47 @@ export default function ProductsManager() {
     p.collection.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  if (isLoading) {
+  if (!isReady || isLoading) {
     return (
       <main className="admin-shell">
         <section className="admin-login-card">
           <Package className="admin-spin" size={28} />
-          <h1>Завантажуємо товари</h1>
+          <h1>Завантажуємо...</h1>
+        </section>
+      </main>
+    )
+  }
+
+  if (!isAuthed) {
+    return (
+      <main className="admin-shell">
+        <section className="admin-login-card">
+          <ShieldCheck size={28} />
+          <h1>Управління товарами</h1>
+          <p>Увійдіть для доступу</p>
+          <form onSubmit={handleSignIn}>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Пароль"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {errorMessage && <p className="admin-error">{errorMessage}</p>}
+            <button type="submit" className="button primary">
+              Увійти
+            </button>
+          </form>
+          <a className="button secondary" href="#/admin">
+            Назад до адмінки
+          </a>
         </section>
       </main>
     )
@@ -195,11 +261,11 @@ export default function ProductsManager() {
         </div>
         <div className="admin-actions">
           <button className="button primary" onClick={handleAdd}>
-            <Plus size={17} />
-            <span>Додати товар</span>
+            Додати товар
           </button>
-          <button className="button secondary" onClick={() => window.location.hash = '#/admin'}>
-            Назад до адмінки
+          <button className="button secondary" onClick={handleSignOut}>
+            <LogOut size={17} />
+            <span>Вийти</span>
           </button>
         </div>
       </header>
