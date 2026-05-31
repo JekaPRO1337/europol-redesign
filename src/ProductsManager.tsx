@@ -83,11 +83,11 @@ export default function ProductsManager() {
         .order('title')
 
       if (error) throw error
-      // Map source_url to sourceUrl and add base path to images
+      // Map source_url to sourceUrl and add full URL to images
       const mappedData = (data || []).map((product: any) => ({
         ...product,
         sourceUrl: product.source_url,
-        image: product.image.startsWith('http') ? product.image : `/europol-redesign/${product.image}`
+        image: product.image.startsWith('http') ? product.image : `https://jekapro1337.github.io/europol-redesign/${product.image}`
       }))
       setProducts(mappedData)
     } catch (error) {
