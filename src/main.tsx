@@ -5,11 +5,25 @@ import AdminPage from './AdminPage'
 import ProductsManager from './ProductsManager'
 import './styles.css'
 
-const hash = window.location.hash
-const Root = hash === '#/admin' ? AdminPage : hash === '#/admin/products' ? ProductsManager : App
+function getRootComponent() {
+  const hash = window.location.hash
+  return hash === '#/admin' ? AdminPage : hash === '#/admin/products' ? ProductsManager : App
+}
 
-createRoot(document.getElementById('root')!).render(
+const root = createRoot(document.getElementById('root')!)
+const RootComponent = getRootComponent()
+root.render(
   <StrictMode>
-    <Root />
+    <RootComponent />
   </StrictMode>,
 )
+
+// Listen for hash changes to update the component
+window.addEventListener('hashchange', () => {
+  const NewRootComponent = getRootComponent()
+  root.render(
+    <StrictMode>
+      <NewRootComponent />
+    </StrictMode>,
+  )
+})
