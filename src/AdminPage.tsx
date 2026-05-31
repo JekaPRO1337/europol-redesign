@@ -337,10 +337,10 @@ export default function AdminPage() {
               />
             </label>
           </div>
-          <a className="button secondary" href="#/admin/products">
+          <button className="button secondary" onClick={() => window.location.hash = '#/admin/products'}>
             <Package size={17} />
             <span>Товари</span>
-          </a>
+          </button>
           <a className="button secondary" href="#/">
             На сайт
           </a>

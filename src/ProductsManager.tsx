@@ -198,9 +198,9 @@ export default function ProductsManager() {
             <Plus size={17} />
             <span>Додати товар</span>
           </button>
-          <a className="button secondary" href="#/admin">
+          <button className="button secondary" onClick={() => window.location.hash = '#/admin'}>
             Назад до адмінки
-          </a>
+          </button>
         </div>
       </header>
 
