@@ -263,6 +263,10 @@ export default function ProductsManager() {
           <button className="button primary" onClick={handleAdd}>
             Додати товар
           </button>
+          <a className="button secondary" href="#/admin">
+            <Package size={17} />
+            <span>Назад до адмінки</span>
+          </a>
           <button className="button secondary" onClick={handleSignOut}>
             <LogOut size={17} />
             <span>Вийти</span>
