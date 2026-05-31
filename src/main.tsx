@@ -5,6 +5,13 @@ import AdminPage from './AdminPage'
 import ProductsManager from './ProductsManager'
 import './styles.css'
 
+// Handle GitHub Pages redirect
+const redirect = sessionStorage.redirect
+delete sessionStorage.redirect
+if (redirect && redirect !== location.href) {
+  history.replaceState(null, null, redirect)
+}
+
 const hash = window.location.hash
 const Root = hash === '#/admin' ? AdminPage : hash === '#/products' ? ProductsManager : App
 
